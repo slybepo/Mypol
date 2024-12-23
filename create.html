@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Thread</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <header>
+    <h1>Create a Thread</h1>
+    <a href="index.html">Back to Threads</a>
+  </header>
+  <main>
+    <form id="create-thread-form">
+      <input type="text" id="title" placeholder="Thread Title" required>
+      <textarea id="content" placeholder="Thread Content" required></textarea>
+      <input type="text" id="username" placeholder="Your Username" required>
+      <button type="submit">Create</button>
+    </form>
+    <div id="message"></div>
+  </main>
+  <script>
+    document.getElementById("create-thread-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+      const username = document.getElementById("username").value;
+
+      fetch("http://localhost:3000/api/threads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content, username }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("message").textContent = "Thread created successfully!";
+            document.getElementById("create-thread-form").reset();
+          }
+        })
+        .catch((error) => console.error("Error creating thread:", error));
+    });
+  </script>
+</body>
+</html>
