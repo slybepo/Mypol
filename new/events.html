@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0f172a;
+      color: #e0f2fe;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #1e293b;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    nav .logo {
+      font-size: 1.5rem;
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    .event-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+    }
+
+    .event-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-thumbnail {
+      width: 150px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .event-details {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .event-title {
+      font-size: 1.5rem;
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+
+    .event-description {
+      font-size: 1rem;
+      color: #e0f2fe;
+    }
+
+    .learn-more-btn {
+      background-color: #22c55e;
+      padding: 10px 20px;
+      color: #0f172a;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .learn-more-btn:hover {
+      background-color: #15803d;
+    }
+
+    .learn-more-btn::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border: 2px solid rgba(34, 197, 94, 0.5);
+      border-radius: 5px;
+      animation: flicker 1.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.5; }
+    }
+
+    /* Popup Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1000;
+      max-width: 90%;
+      width: 500px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal.open {
+      display: block;
+    }
+
+    .modal img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .modal h2 {
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      margin-bottom: 20px;
+    }
+
+    .modal .participate-btn {
+      background-color: #38bdf8;
+      color: #0f172a;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal .locked-btn {
+      background-color: #64748b;
+      color: #1e293b;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: not-allowed;
+    }
+
+    .modal .locked-btn::before {
+      content: '🔒';
+    }
+
+    /* Blur Background */
+    .blurred {
+      filter: blur(5px);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">DreamWeave Studios</div>
+  </nav>
+
+  <div class="event-container" id="event-container">
+    <!-- Event Card -->
+    <div class="event-card">
+      <img src="https://via.placeholder.com/150" alt="Event Thumbnail" class="event-thumbnail">
+      <div class="event-details">
+        <h2 class="event-title">Event Title</h2>
+        <p class="event-description">Short description about the event goes here.</p>
+      </div>
+      <button class="learn-more-btn" onclick="showModal()">Learn More</button>
+    </div>
+  </div>
+
+  <!-- Popup Modal -->
+  <div class="modal" id="modal">
+    <img src="https://via.placeholder.com/150" alt="Event Thumbnail">
+    <h2>Event Title</h2>
+    <p>Detailed description about the event goes here.</p>
+    <button class="participate-btn" id="participate-btn">Participate</button>
+    <button class="locked-btn" id="locked-btn" style="display: none;">Locked</button>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const eventContainer = document.getElementById('event-container');
+    const participateBtn = document.getElementById('participate-btn');
+    const lockedBtn = document.getElementById('locked-btn');
+    let loggedIn = false; // Toggle this to simulate user login state
+
+    function showModal() {
+      modal.classList.add('open');
+      eventContainer.classList.add('blurred');
+      if (!loggedIn) {
+        participateBtn.style.display = 'none';
+        lockedBtn.style.display = 'block';
+      } else {
+        participateBtn.style.display = 'block';
+        lockedBtn.style.display = 'none';
+      }
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    function closeModal() {
+      modal.classList.remove('open');
+      eventContainer.classList.remove('blurred');
+    }
+
+    // Simulate login system
+    window.addEventListener('DOMContentLoaded', () => {
+      // Fetch user state
+      const token = localStorage.getItem('discord_token');
+      if (token) loggedIn = true;
+    });
+  </script>
+</body>
+</html>
