@@ -122,7 +122,9 @@
         transform: translateY(0);
       }
     }
-
+    .nosearch{
+      color: grey;
+    }
   </style>
 </head>
 <body>
@@ -137,6 +139,7 @@
   </section>
 
   <section class="search-results" id="search-results">
+    <h1 id="ns" class="nosearch"></h1>
     <!-- Search results will appear here -->
   </section>
 
@@ -144,7 +147,7 @@
     const gameSearchInput = document.getElementById('game-search');
     const searchResults = document.getElementById('search-results');
     const loader = document.getElementById('loader');
-
+    const searchtext = document.getElementById('ns');
     // Example game data for search
     const games = [
       {
@@ -167,6 +170,14 @@
     function displayGames(gameArray) {
       // Clear current results
       searchResults.innerHTML = '';
+      if (searchResult.innerHTML = ''){
+        searchtext.textContent = "Search for a game👋";
+        
+      }
+      else{
+        searchtext.textContent = "";
+      }
+      
 
       gameArray.forEach(game => {
         // Create game card element
