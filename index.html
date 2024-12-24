@@ -195,7 +195,7 @@
   </section>
 
   <section id="categories" class="categories">
-    <h2>Our Categories</h2>
+    <h2>welcome back <b id="welname" style="color: cyan;"></b>👋</h2>
     <div class="category-cards">
       <div class="category-card">
         <h3>Category 1</h3>
@@ -229,6 +229,8 @@
     const dropdownMenu = document.getElementById('dropdown-menu');
     const adminLabel = document.getElementById('admin-label');
     const logoutBtn = document.getElementById('logout-btn');
+    const wname = document.getElementById('welname');
+      
 
     loginBtn.addEventListener('click', () => {
       window.location.href = DISCORD_AUTH_URL;
@@ -257,6 +259,7 @@
           headers: { Authorization: `Bearer ${token}` },
         });
         const user = await response.json();
+        wname.text = user.username
 
         profileLink.querySelector('a').innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;"> ${user.username}`;
         loginBtn.style.display = 'none';
