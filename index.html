@@ -19,7 +19,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      overflow-x: hidden; /* Prevent horizontal scrolling */
+      overflow-x: hidden;
     }
 
     /* Navigation */
@@ -71,7 +71,6 @@
       min-width: 150px;
       top: 40px;
       right: 0;
-      animation: fadeIn 0.3s ease-in-out;
     }
 
     .dropdown a {
@@ -90,17 +89,6 @@
 
     nav ul li:hover .dropdown {
       display: block;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     /* Hero Section */
@@ -166,12 +154,11 @@
   <script>
     const DISCORD_CLIENT_ID = '1227271362264043681';
     const DISCORD_REDIRECT_URI = 'https://saphireshop.xyz';
+    const GUILD_ID = '1194870692647293009';
+    const MOD_ROLE_ID = '1319962253453430804';
     const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(
       DISCORD_REDIRECT_URI
     )}&response_type=token&scope=identify%20guilds%20guilds.members.read`;
-
-    const GUILD_ID = '1194870692647293009'; // Replace with your Guild ID
-    const MOD_ROLE_ID = '1319962253453430804'; // Replace with the moderator role ID
 
     const loginBtn = document.getElementById('login-btn');
     const profileLink = document.getElementById('profile-link');
@@ -205,20 +192,20 @@
         userMenu.querySelector('a').innerHTML = `<img src="${
           user.avatar
             ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-            : 'default-avatar.png'
+            : 'https://cdn.discordapp.com/embed/avatars/0.png'
         }" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;"> ${user.username}`;
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
     }
 
-    async function checkToken() {
+    function checkToken() {
       const hashParams = new URLSearchParams(window.location.hash.slice(1));
       const token = hashParams.get('access_token');
 
       if (token) {
         localStorage.setItem('discord_token', token);
-        await fetchUserInfo(token);
+        fetchUserInfo(token);
       }
     }
 
