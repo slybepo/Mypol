@@ -24,6 +24,76 @@
       flex-direction: column;
       min-height: 100vh;
     }
+    .popup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #22c55e;
+      color: #0f172a;
+      padding: 15px 20px;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .popup.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .popup .close-btn {
+      background: none;
+      border: none;
+      color: #0f172a;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    /* Cookie Popup */
+    .cookie-popup {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #1e293b;
+      color: #e0f2fe;
+      padding: 15px 20px;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .cookie-popup.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cookie-popup button {
+      margin-left: 10px;
+      background-color: #38bdf8;
+      color: #0f172a;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .cookie-popup button:hover {
+      background-color: #0f172a;
+      color: #38bdf8;
+    }
 
     /* Navigation */
     nav {
@@ -215,7 +285,45 @@
   <footer>
     &copy; 2024 DreamWeave Studios. All Rights Reserved.
   </footer>
+<div class="popup" id="login-popup">
+    🌐 You are logged in
+    <button class="close-btn" onclick="closePopup()">X</button>
+  </div>
 
+  <div class="cookie-popup" id="cookie-popup">
+    This site uses cookies to improve your experience.
+    <button onclick="acceptCookies()">Accept</button>
+  </div>
+
+  <script>
+    const loginPopup = document.getElementById('login-popup');
+    const cookiePopup = document.getElementById('cookie-popup');
+
+    function showPopup() {
+      loginPopup.classList.add('visible');
+      setTimeout(() => closePopup(), 5000); // Auto-close after 5 seconds
+    }
+
+    function closePopup() {
+      loginPopup.classList.remove('visible');
+    }
+
+    function acceptCookies() {
+      cookiePopup.classList.remove('visible');
+      localStorage.setItem('cookiesAccepted', 'true');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('cookiesAccepted')) {
+        cookiePopup.classList.add('visible');
+      }
+
+      const token = localStorage.getItem('discord_token');
+      if (token) {
+        showPopup();
+      }
+    });
+  </script>
   <script>
     const DISCORD_CLIENT_ID = '1227271362264043681';
     const DISCORD_REDIRECT_URI = 'https://saphireshop.xyz';
