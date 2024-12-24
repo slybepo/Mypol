@@ -124,6 +124,8 @@
     }
     .nosearch{
       color: grey;
+      opacity: 0.8;
+      margin-top: 5rem;
     }
   </style>
 </head>
@@ -211,7 +213,7 @@
 
     gameSearchInput.addEventListener('input', () => {
       const query = gameSearchInput.value;
-      if (query.length > 2) {
+      if (query.length >= 2) {
         searchGames(query);
       } else {
         searchResults.innerHTML = ''; // Clear results if input is empty
