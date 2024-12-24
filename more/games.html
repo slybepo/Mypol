@@ -171,13 +171,6 @@
     function displayGames(gameArray) {
       // Clear current results
       searchResults.innerHTML = '';
-      if (searchResult.innerHTML = ''){
-        searchtext.textContent = "Search for a game👋";
-        
-      }
-      else{
-        searchtext.textContent = "";
-      }
       
 
       gameArray.forEach(game => {
@@ -223,6 +216,14 @@
       } else {
         searchResults.innerHTML = ''; // Clear results if input is empty
       }
+      if (query.length < 2){
+        searchtext.textContent = "Search for a game👋";
+        
+      }
+      else{
+        searchtext.textContent = "";
+      }
+      
     });
 
   </script>
