@@ -173,7 +173,10 @@
   <script>
     // Discord Login Configuration
     
-    const DISCORD_AUTH_URL = `https://discord.com/oauth2/authorize?client_id=1227271362264043681&response_type=code&redirect_uri=https%3A%2F%2Fsaphireshop.xyz&scope=identify+guilds.join+guilds.channels.read+guilds+guilds.members.read`;
+    const DISCORD_CLIENT_ID = '1227271362264043681';
+const DISCORD_REDIRECT_URI = 'https://saphireshop.xyz';
+const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify%20guilds`;
+    
 
     const loginBtn = document.getElementById('login-btn');
     const profileLink = document.getElementById('profile-link');
