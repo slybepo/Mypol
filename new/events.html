@@ -180,14 +180,16 @@
 <body>
   <nav>
     <div class="logo">DreamWeave Studios</div>
-    <li id="profile-link"></li>
+    <li id="profile-link">
+      
+    </li>
  
   </nav>
 
   <div class="event-container" id="event-container">
     <!-- Event Card -->
     <div class="event-card">
-      <img src="https://via.placeholder.com/150" alt="Event Thumbnail" class="event-thumbnail">
+      <img src="https://i.ibb.co/WDx47wC/image-143.png" alt="Event Thumbnail" class="event-thumbnail">
       <div class="event-details">
         <h2 class="event-title">Event Title</h2>
         <p class="event-description">Short description about the event goes here.</p>
@@ -198,7 +200,7 @@
 
   <!-- Popup Modal -->
   <div class="modal" id="modal">
-    <img src="https://via.placeholder.com/150" alt="Event Thumbnail">
+    <img src="https://i.ibb.co/WDx47wC/image-143.png" alt="Event Thumbnail">
     <h2>Event Title</h2>
     <p>Detailed description about the event goes here.</p>
     <button class="participate-btn" id="participate-btn">Participate</button>
@@ -211,7 +213,7 @@
     const participateBtn = document.getElementById('participate-btn');
     const lockedBtn = document.getElementById('locked-btn');
     const profileLink = document.getElementById('profile-link');
-    let loggedIn = false; // Toggle this to simulate user login state
+   // Toggle this to simulate user login state
 
     function showModal() {
       modal.classList.add('open');
