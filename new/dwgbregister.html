@@ -11,7 +11,55 @@
       padding: 0;
       box-sizing: border-box;
     }
+.animated-button {
+  margin-top: 4rem;
+  position: relative;
+  display: inline-block;
+  padding: 12px 24px;
+  border: none;
+  font-size: 16px;
+  background-color: inherit;
+  border-radius: 100px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 0 0 2px white;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
 
+.animated-button span:last-child {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: #2196F3;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.animated-button span:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.animated-button:hover {
+  box-shadow: 0 0 0 5px #2195f360;
+  color: #ffffff;
+}
+
+.animated-button:active {
+  scale: 0.95;
+}
+
+.animated-button:hover span:last-child {
+  width: 150px;
+  height: 150px;
+  opacity: 1;
+    }
     body {
       font-family: 'Arial', sans-serif;
       background-color: #0f172a;
@@ -126,15 +174,15 @@
     <h1>DWGB Registration Form</h1>
     <form id="registration-form">
       <div class="form-group">
-        <label for="server-invite">Discord Server Invite Link <span style="color: red;">*</span></label>
+        <label for="server-invite">Discord Server Invite<span style="color: red;">*</span></label>
         <input type="url" id="server-invite" required>
       </div>
       <div id="team-fields">
         <div class="form-group">
-          <label for="team-title">Team Member Title</label>
+          <label for="team-title">Role</label>
           <input type="text" class="team-title" placeholder="e.g., Lead Developer">
-          <label for="team-name">Team Member Name</label>
-          <input type="text" class="team-name" placeholder="e.g., John Doe">
+          <label for="team-name">Name</label>
+          <input type="text" class="team-name" placeholder="e.g., jeff regart">
         </div>
       </div>
       <button type="button" class="add-field-btn" onclick="addTeamField()">+ Add Team Member</button>
@@ -158,13 +206,13 @@
         <label for="description">Description <span style="color: red;">*</span></label>
         <textarea id="description" rows="5" required></textarea>
       </div>
-      <button type="submit" class="submit-btn">Submit</button>
+      <button type="submit" class="animated-button">Submit</button>
     </form>
   </div>
   <div class="popup" id="confirmation-popup">
     <h2>🌐 We received your form!</h2>
     <p>Our support team will contact you shortly at <span id="user-email"></span>.</p>
-    <button onclick="closePopup()">OK</button>
+    <button class="animated-button" onclick="closePopup()">OK</button>
   </div>
   <script>
     const form = document.getElementById('registration-form');
