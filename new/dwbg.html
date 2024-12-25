@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DWGB Registration Form</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0f172a;
+      color: #e0f2fe;
+      padding: 20px;
+    }
+
+    .form-container {
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h1 {
+      text-align: center;
+      color: #38bdf8;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #334155;
+      color: #e0f2fe;
+    }
+
+    .form-group input[type="file"] {
+      padding: 5px;
+    }
+
+    .form-group button {
+      display: inline-block;
+      background-color: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .form-group button:hover {
+      background-color: #0f172a;
+      color: #38bdf8;
+    }
+
+    .add-field-btn {
+      background-color: #22c55e;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #2563eb;
+      font-size: 1.2rem;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: none;
+    }
+
+    .popup.visible {
+      display: block;
+    }
+
+    .popup h2 {
+      color: #38bdf8;
+    }
+
+    .popup button {
+      background-color: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .popup button:hover {
+      background-color: #0f172a;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>DWGB Registration Form</h1>
+    <form id="registration-form">
+      <div class="form-group">
+        <label for="server-invite">Discord Server Invite Link <span style="color: red;">*</span></label>
+        <input type="url" id="server-invite" required>
+      </div>
+      <div id="team-fields">
+        <div class="form-group">
+          <label for="team-title">Team Member Title</label>
+          <input type="text" class="team-title" placeholder="e.g., Lead Developer">
+          <label for="team-name">Team Member Name</label>
+          <input type="text" class="team-name" placeholder="e.g., John Doe">
+        </div>
+      </div>
+      <button type="button" class="add-field-btn" onclick="addTeamField()">+ Add Team Member</button>
+      <div class="form-group">
+        <label for="email">Email <span style="color: red;">*</span></label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="thumbnail">Thumbnail (optional)</label>
+        <input type="file" id="thumbnail">
+      </div>
+      <div class="form-group">
+        <label for="game-link">Game Download Link <span style="color: red;">*</span></label>
+        <input type="url" id="game-link" required>
+      </div>
+      <div class="form-group">
+        <label for="title">Project Title <span style="color: red;">*</span></label>
+        <input type="text" id="title" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description <span style="color: red;">*</span></label>
+        <textarea id="description" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+  </div>
+  <div class="popup" id="confirmation-popup">
+    <h2>🌐 We received your form!</h2>
+    <p>Our support team will contact you shortly at <span id="user-email"></span>.</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+  <script>
+    const form = document.getElementById('registration-form');
+    const popup = document.getElementById('confirmation-popup');
+    const emailField = document.getElementById('email');
+    const userEmail = document.getElementById('user-email');
+    const teamFieldsContainer = document.getElementById('team-fields');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      userEmail.textContent = emailField.value;
+      popup.classList.add('visible');
+
+      const teamFields = Array.from(teamFieldsContainer.children).map((field) => {
+        return {
+          title: field.querySelector('.team-title')?.value,
+          name: field.querySelector('.team-name')?.value,
+        };
+      });
+
+      const formData = {
+        serverInvite: document.getElementById('server-invite').value,
+        team: teamFields,
+        email: emailField.value,
+        gameLink: document.getElementById('game-link').value,
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+      };
+
+      const webhookUrl = 'https://discord.com/api/webhooks/1221053194826944674/SDJbKS0l5JAONMwlf5KWAVjn_DLbsu82ADlV3WpCpCWhUBIW3b5Zn3hCDkskUCgCfaXC';
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ embeds: [{ description: JSON.stringify(formData, null, 2) }] }),
+      });
+    });
+
+    function closePopup() {
+      popup.classList.remove('visible');
+      form.reset();
+    }
+
+    function addTeamField() {
+      const newField = document.createElement('div');
+      newField.className = 'form-group';
+      newField.innerHTML = `
+        <label for="team-title">Team Member Title</label>
+        <input type="text" class="team-title" placeholder="e.g., Lead Developer">
+        <label for="team-name">Team Member Name</label>
+        <input type="text" class="team-name" placeholder="e.g., John Doe">
+      `;
+      teamFieldsContainer.appendChild(newField);
+    }
+  </script>
+</body>
+  </html>
+  
