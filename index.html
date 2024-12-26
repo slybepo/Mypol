@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DreamWeave Studios</title>
   <style>
-    /* General Reset */
+    
     * {
       margin: 0;
       padding: 0;
@@ -13,9 +13,9 @@
     }
 
     html, body {
-      overflow-x: hidden; /* Prevent scrolling on the right */
+      overflow-x: hidden; 
     }
-/* From Uiverse.io by gharsh11032000 */ 
+
 .animated-button {
   margin-top: 4rem;
   position: relative;
@@ -108,7 +108,7 @@
       margin-left: 10px;
     }
 
-    /* Cookie Popup */
+    
     .cookie-popup {
       position: fixed;
       bottom: 20px;
@@ -147,7 +147,7 @@
       color: #38bdf8;
     }
 
-    /* Navigation */
+    
     nav {
       display: flex;
       justify-content: space-between;
@@ -188,7 +188,7 @@
       color: #0f172a;
     }
 
-    /* Dropdown Menu */
+    
     .dropdown-menu {
       position: absolute;
       top: 100%;
@@ -218,7 +218,7 @@
       display: flex;
     }
 
-    /* Hero Section */
+    
     .hero {
       flex-grow: 1;
       text-align: center;
@@ -241,7 +241,7 @@
       color: #e0f2fe;
     }
 
-    /* Categories */
+    
     .categories {
       padding: 50px 20px;
       text-align: center;
@@ -285,9 +285,9 @@
     }
 .lt{
   text-decoration: none;
-  color: blue;
+  color: #e0f2fe;
 }
-    /* Footer */
+    
     footer {
       background-color: #1e293b;
       text-align: center;
@@ -319,15 +319,20 @@
     <p>Creating immersive experiences for a better tomorrow.</p>
   
 <button onclick="window.location.href='/new/events'" class="animated-button">
-  <span>Events</span>
+  
+   <span>Events</span>
   <span></span>
 </button>
-    
+    <button class="animated-button" id="staff" onclick="window.location.href='/mod/manage'" style="display: none;">
+   <span>Staff Room</span>
+  <span></span>
+    </button>
   </section>
 
   <section id="categories" class="categories">
     <h2><b id="welname" >you are not logged in</b></h2>
-    <h3>News 📢</h3>
+    <br>
+    <h3> News 📢</h3>
     <div class="category-cards">
       <div class="category-card">
         <h3>Events</h3>
@@ -338,8 +343,8 @@
         <p>Fill up the form with your company at <a class="lt" href="/dwgbregister">DWGB</a></p>
       </div>
       <div class="category-card">
-        <h3>Category 3</h3>
-        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        <h3>affilated games</h3>
+        <p>If you're looking for affilated games click the button below!</p>
       </div>
     </div>
   </section>
@@ -349,11 +354,12 @@
   </footer>
 <div class="popup" id="login-popup">
     🌐 You are logged in
-    <button class="close-btn" onclick="closePopup()">X</button>
+    <button class="close-btn" onclick="closePopup()"></button>
   </div>
 
   <div class="cookie-popup" id="cookie-popup">
-    DreamWeave uses cookies to improve your experience. by accepting these cookies you also agree to our <a href="terms" class="lt">Terms of Services</a> and our <a class="lt">Privacy Policy</a>
+    DreamWeave uses cookies to improve your experience.
+    By accepting these cookies you also agree to our <a href="terms" class="lt">Terms of Services</a> and our <a class="lt">Privacy Policy</a>
     <button onclick="acceptCookies()">Accept</button>
   </div>
 
@@ -395,6 +401,7 @@
     const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify%20guilds%20guilds.members.read`;
 
     const loginBtn = document.getElementById('login-btn');
+    const staffr = document.getElementById('staff');
     const profileLink = document.getElementById('profile-link');
     const dropdownMenu = document.getElementById('dropdown-menu');
     const adminLabel = document.getElementById('admin-label');
@@ -447,6 +454,7 @@
 
         if (guildMember.roles.includes(MOD_ROLE_ID)) {
           adminLabel.style.display = 'block';
+          staffr.style.display = 'block';
         }
       } catch (err) {
         console.error('Error fetching user guild info:', err);
