@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Ratings</title>
+  <style>
+    /* General styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0f172a;
+      color: #e0f2fe;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #1e293b;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    nav .logo {
+      height: 5rem;
+      width: 5rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #e0f2fe;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    .search-section {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .search-bar-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .search-bar {
+      width: 300px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #0f172a;
+    }
+
+    .loader {
+      margin: 20px auto;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #38bdf8;
+      border-top: 5px solid transparent;
+      border-radius: 50%;
+      animation: spin 1.3s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .games-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .game-card {
+      width: 250px;
+      height: 350px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      transform: perspective(1000px);
+      transition: transform 0.5s;
+    }
+
+    .game-card:hover {
+      transform: perspective(1000px) rotateY(15deg);
+    }
+
+    .game-card-content {
+      position: absolute;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .rating-container {
+      margin-top: 10px;
+    }
+
+    .rating-container input {
+      display: none;
+    }
+
+    .rating-container label {
+      font-size: 20px;
+      color: gray;
+      cursor: pointer;
+    }
+
+    .rating-container label:hover,
+    .rating-container input:checked ~ label {
+      color: gold;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <img src="https://i.ibb.co/FzRdYp0/logo-generator-image-removebg-preview-1.png" class="logo" alt="Logo">
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#games">Games</a></li>
+      <li><a href="#profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="search-section">
+    <h1>Find Your Favorite Games</h1>
+    <div class="search-bar-container">
+      <input type="text" class="search-bar" placeholder="Search for a game...">
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="loader"></div>
+  </div>
+
+  <section class="games-section" id="games">
+    <!-- Games dynamically added here -->
+  </section>
+
+  <footer>
+    &copy; 2024 DreamWeave Studios. All Rights Reserved.
+  </footer>
+
+  <script>
+    const games = [
+      {
+        id: 1,
+        title: "Game One",
+        description: "An epic adventure.",
+        image: "https://via.placeholder.com/250x350",
+      },
+      {
+        id: 2,
+        title: "Game Two",
+        description: "A thrilling challenge.",
+        image: "https://via.placeholder.com/250x350",
+      },
+      // Add more games as needed
+    ];
+
+    const ratings = JSON.parse(localStorage.getItem('ratings')) || {};
+
+    const loader = document.querySelector('.loader');
+    const gamesSection = document.querySelector('.games-section');
+
+    function displayGames() {
+      gamesSection.innerHTML = '';
+      games.forEach((game) => {
+        const gameCard = document.createElement('div');
+        gameCard.classList.add('game-card');
+        gameCard.style.backgroundImage = `url(${game.image})`;
+
+        gameCard.innerHTML = `
+          <div class="game-card-content">
+            <h3>${game.title}</h3>
+            <p>${game.description}</p>
+            <div class="rating-container">
+              ${[5, 4, 3, 2, 1].map(
+                (rating) => `
+                  <input type="radio" id="${game.id}-${rating}" name="rating-${game.id}" value="${rating}" ${
+                  ratings[game.id] === rating ? 'checked' : ''
+                }>
+                  <label for="${game.id}-${rating}">⭐</label>
+                `
+              ).join('')}
+            </div>
+          </div>
+        `;
+
+        gameCard.querySelectorAll('input').forEach((input) => {
+          input.addEventListener('change', (e) => {
+            ratings[game.id] = parseInt(e.target.value);
+            localStorage.setItem('ratings', JSON.stringify(ratings));
+          });
+        });
+
+        gamesSection.appendChild(gameCard);
+      });
+    }
+
+    function showLoader() {
+      loader.style.display = 'block';
+      setTimeout(() => {
+        loader.style.display = 'none';
+        displayGames();
+      }, 1300);
+    }
+
+    document.querySelector('.search-bar').addEventListener('input', showLoader);
+
+    // Initial load
+    displayGames();
+  </script>
+</body>
+</html>
