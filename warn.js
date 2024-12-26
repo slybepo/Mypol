@@ -1,3 +1,5 @@
+
+document.addEventListener('DOMContentLoaded', () => {
 const warnings = JSON.parse(localStorage.getItem('warnings')) || {};
     const webhookURL = 'https://discord.com/api/webhooks/1221053194826944674/SDJbKS0l5JAONMwlf5KWAVjn_DLbsu82ADlV3WpCpCWhUBIW3b5Zn3hCDkskUCgCfaXC';
 
@@ -61,3 +63,5 @@ const warnings = JSON.parse(localStorage.getItem('warnings')) || {};
 
     // Initialize the warnings table on page load
     updateWarningsTable();
+   
+});
