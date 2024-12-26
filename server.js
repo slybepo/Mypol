@@ -1,53 +1,111 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const fs = require("fs");
+const loginPopup = document.getElementById('login-popup');
+    const cookiePopup = document.getElementById('cookie-popup');
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+    function showPopup() {
+      loginPopup.classList.add('visible');
+      setTimeout(() => closePopup(), 5000); // Auto-close after 5 seconds
+    }
 
-const THREADS_DIR = "./threads";
+    function closePopup() {
+      loginPopup.classList.remove('visible');
+    }
 
-// Ensure threads directory exists
-if (!fs.existsSync(THREADS_DIR)) fs.mkdirSync(THREADS_DIR);
+    function acceptCookies() {
+      cookiePopup.classList.remove('visible');
+      localStorage.setItem('cookiesAccepted', 'true');
+    }
 
-// Fetch all threads
-app.get("/api/threads", (req, res) => {
-  const files = fs.readdirSync(THREADS_DIR);
-  const threads = files.map((file) => JSON.parse(fs.readFileSync(`${THREADS_DIR}/${file}`)));
-  res.status(200).send(threads);
-});
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('cookiesAccepted')) {
+        cookiePopup.classList.add('visible');
+      }
 
-// Fetch a specific thread
-app.get("/api/threads/:id", (req, res) => {
-  const threadId = req.params.id;
-  const filePath = `${THREADS_DIR}/${threadId}.json`;
+      const token = localStorage.getItem('discord_token');
+      if (token) {
+        showPopup();
+      }
+    });
+  </script>
+  <script>
+    const DISCORD_CLIENT_ID = '1227271362264043681';
+    const DISCORD_REDIRECT_URI = 'https://saphireshop.xyz';
+    const GUILD_ID = '1194870692647293009';
+    const MOD_ROLE_ID = '1319962253453430804';
 
-  if (fs.existsSync(filePath)) {
-    const thread = JSON.parse(fs.readFileSync(filePath));
-    res.status(200).send(thread);
-  } else {
-    res.status(404).send({ error: "Thread not found" });
-  }
-});
+    const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify%20guilds%20guilds.members.read`;
 
-// Create a new thread
-app.post("/api/threads", (req, res) => {
-  const { title, content, username } = req.body;
-  const threadId = Date.now().toString();
+    const loginBtn = document.getElementById('login-btn');
+    const staffr = document.getElementById('staff');
+    const profileLink = document.getElementById('profile-link');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const adminLabel = document.getElementById('admin-label');
+    const logoutBtn = document.getElementById('logout-btn');
+    const wname = document.getElementById('welname');
+      
 
-  const threadData = {
-    id: threadId,
-    title,
-    content,
-    username,
-    createdAt: new Date(),
-  };
+    loginBtn.addEventListener('click', () => {
+      window.location.href = DISCORD_AUTH_URL;
+    });
 
-  fs.writeFileSync(`${THREADS_DIR}/${threadId}.json`, JSON.stringify(threadData));
-  res.status(201).send({ success: true, threadId });
-});
+    profileLink.addEventListener('click', () => {
+      dropdownMenu.classList.toggle('dropdown-visible');
+    });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
-         
+    function checkToken() {
+      const hash = window.location.hash;
+      if (hash) {
+        const params = new URLSearchParams(hash.slice(1));
+        const token = params.get('access_token');
+        if (token) {
+          localStorage.setItem('discord_token', token);
+          fetchUserInfo(token);
+          fetchUserGuilds(token);
+        }
+      }
+    }
+
+    async function fetchUserInfo(token) {
+      try {
+        const response = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const user = await response.json();
+        wname.textContent = `welcome back ${user.username} 👋`
+
+        profileLink.querySelector('a').innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;"> ${user.username}`;
+        loginBtn.style.display = 'none';
+      } catch (err) {
+        console.error('Error fetching user info:', err);
+      }
+    }
+
+    async function fetchUserGuilds(token) {
+      try {
+        const response = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const guildMember = await response.json();
+
+        if (guildMember.roles.includes(MOD_ROLE_ID)) {
+          adminLabel.style.display = 'block';
+          staffr.style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Error fetching user guild info:', err);
+      }
+    }
+
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('discord_token');
+      window.location.reload();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('discord_token');
+      if (token) {
+        fetchUserInfo(token);
+        fetchUserGuilds(token);
+      } else {
+        checkToken();
+      }
+    });
