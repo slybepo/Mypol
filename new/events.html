@@ -110,7 +110,7 @@
       to { opacity: 0.5; }
     }
 
-    /* Popup Modal */
+   
     .modal {
       display: none;
       position: fixed;
@@ -171,7 +171,7 @@
       content: '🔒';
     }
 
-    /* Blur Background */
+    
     .blurred {
       filter: blur(5px);
     }
@@ -187,7 +187,7 @@
   </nav>
 
   <div class="event-container" id="event-container">
-    <!-- Event Card -->
+ 
     <div class="event-card">
       <img src="https://i.ibb.co/FzRdYp0/logo-generator-image-removebg-preview-1.png" alt="Event Thumbnail" class="event-thumbnail">
       <div class="event-details">
@@ -198,7 +198,7 @@
     </div>
   </div>
 
-  <!-- Popup Modal -->
+ 
   <div class="modal" id="modal">
     <img src="https://i.ibb.co/vYBDxVJ/logo-generator-image.png" alt="Event Thumbnail">
     <h2>DreamWeave Game Battle</h2>
@@ -213,7 +213,7 @@
     const participateBtn = document.getElementById('participate-btn');
     const lockedBtn = document.getElementById('locked-btn');
     const profileLink = document.getElementById('profile-link');
-   // Toggle this to simulate user login state
+  
 
     function showModal() {
       modal.classList.add('open');
@@ -280,9 +280,9 @@
       }
     }
 
-    // Simulate login system
+    
     window.addEventListener('DOMContentLoaded', () => {
-      // Fetch user state
+      
       const token = localStorage.getItem('discord_token');
       if (token) loggedIn = true;
     });
