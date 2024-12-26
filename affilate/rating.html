@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Ratings</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     /* General styles */
     * {
@@ -67,13 +68,10 @@
     .search-bar {
       width: 300px;
       padding: 10px;
-
       border-radius: 5px;
       background-color: transparent;
       color: white;
-      border: bottom;
-      border-color: white;
-      
+      border: 1px solid white;
     }
 
     .search-icon {
@@ -82,7 +80,7 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 18px;
-      color: #0f172a;
+      color: #38bdf8;
     }
 
     .loader {
@@ -151,6 +149,7 @@
       font-size: 20px;
       color: gray;
       cursor: pointer;
+      transition: color 0.3s;
     }
 
     .rating-container label:hover,
@@ -164,23 +163,20 @@
     <img src="https://i.ibb.co/FzRdYp0/logo-generator-image-removebg-preview-1.png" class="logo" alt="Logo">
     <ul>
       <li><a href="/">Home</a></li>
-    
       <li><a id="profileLink" href="#profile">Profile</a></li>
     </ul>
   </nav>
 
   <div class="search-section">
-    <h1 id="wn">Find affilate Games</h1>
+    <h1 id="wn">Find Affiliate Games</h1>
     <div class="search-bar-container">
       <input type="text" class="search-bar" placeholder="Search for a game">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"><i class="fas fa-search"></i></span>
     </div>
     <div class="loader"></div>
   </div>
 
-  <section class="games-section" id="games">
-   
-  </section>
+  <section class="games-section" id="games"></section>
 
   <footer>
     &copy; 2024 DreamWeave Studios. All Rights Reserved.
@@ -188,25 +184,16 @@
 
   <script>
     const games = [
-      {
-        id: 1,
-        title: "Game One",
-        description: "An epic adventure.",
-        image: "https://via.placeholder.com/250x350",
-      },
-      {
-        id: 2,
-        title: "Game Two",
-        description: "A thrilling challenge.",
-        image: "https://via.placeholder.com/250x350",
-      },
-     
+      { id: 1, title: "Game One", description: "An epic adventure.", image: "https://via.placeholder.com/250x350" },
+      { id: 2, title: "Game Two", description: "A thrilling challenge.", image: "https://via.placeholder.com/250x350" },
     ];
 
     const ratings = JSON.parse(localStorage.getItem('ratings')) || {};
 
     const loader = document.querySelector('.loader');
     const gamesSection = document.querySelector('.games-section');
+    const profileLink = document.getElementById('profileLink');
+    const wn = document.getElementById('wn');
 
     function displayGames() {
       gamesSection.innerHTML = '';
@@ -225,7 +212,7 @@
                   <input type="radio" id="${game.id}-${rating}" name="rating-${game.id}" value="${rating}" ${
                   ratings[game.id] === rating ? 'checked' : ''
                 }>
-                  <label for="${game.id}-${rating}">⭐</label>
+                  <label for="${game.id}-${rating}"><i class="fas fa-star"></i></label>
                 `
               ).join('')}
             </div>
@@ -243,57 +230,29 @@
       });
     }
 
-    function showLoader() {
-      loader.style.display = 'block';
-      setTimeout(() => {
-        loader.style.display = 'none';
-        displayGames();
-      }, 1300);
-    }
-
-    document.querySelector('.search-bar').addEventListener('input', showLoader);
-    const profileLink = document.getElementById('profile-link');
-        const wname = document.getElementById('wn');
-    
-    displayGames();
     async function fetchUserInfo(token) {
       try {
         const response = await fetch('https://discord.com/api/users/@me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const user = await response.json();
-        wname.textContent = `For you ${user.username} 👋`
-
-        profileLink.querySelector('a').innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;"> ${user.username}`;
-        loginBtn.style.display = 'none';
+        wn.textContent = `For you ${user.username} 👋`;
+        profileLink.innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;"> ${user.username}`;
       } catch (err) {
         console.error('Error fetching user info:', err);
       }
     }
 
-    async function fetchUserGuilds(token) {
-      try {
-        const response = await fetch(`https://discord.com/api/users/@me/guilds/${GUILD_ID}/member`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const guildMember = await response.json();
-
-        if (guildMember.roles.includes(MOD_ROLE_ID)) {
-          adminLabel.style.display = 'block';
-          staffr.style.display = 'block';
-        }
-      } catch (err) {
-        console.error('Error fetching user guild info:', err);
-      }
-                    }
-        window.addEventListener('DOMContentLoaded', () => {
+    function checkToken() {
       const token = localStorage.getItem('discord_token');
       if (token) {
         fetchUserInfo(token);
-        fetchUserGuilds(token);
-      } else {
-        checkToken();
       }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkToken();
+      displayGames();
     });
   </script>
 </body>
