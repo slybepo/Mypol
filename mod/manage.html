@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warning System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .form-container {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .form-container input, .form-container textarea, .form-container button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .form-container button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    .form-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .warnings-list {
+      max-width: 800px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .warnings-list th, .warnings-list td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .warnings-list th {
+      background-color: #f4f4f4;
+    }
+
+    .third-warning {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Warning System</h1>
+  <div class="form-container">
+    <h2>Add a Warning</h2>
+    <label for="user-id">User ID:</label>
+    <input type="text" id="user-id" placeholder="Enter User ID">
+    
+    <label for="reason">Reason:</label>
+    <textarea id="reason" placeholder="Enter the warning reason"></textarea>
+    
+    <button id="add-warning">Add Warning</button>
+  </div>
+
+  <h2>Warnings</h2>
+  <table class="warnings-list">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Warnings</th>
+      </tr>
+    </thead>
+    <tbody id="warnings-table">
+      <!-- Warnings will be populated here -->
+    </tbody>
+  </table>
+
+  <script>
+    const warnings = JSON.parse(localStorage.getItem('warnings')) || {};
+    const webhookURL = 'https://your-webhook-url-here';
+
+    const userIdInput = document.getElementById('user-id');
+    const reasonInput = document.getElementById('reason');
+    const addWarningButton = document.getElementById('add-warning');
+    const warningsTable = document.getElementById('warnings-table');
+
+    const updateWarningsTable = () => {
+      warningsTable.innerHTML = '';
+      for (const userId in warnings) {
+        const warningCount = warnings[userId].length;
+        const isThirdWarning = warningCount % 3 === 0 && warningCount !== 0;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${userId}</td>
+          <td>
+            ${warnings[userId]
+              .map((w, index) => `${index + 1}: ${w.reason}`)
+              .join('<br>')}
+            ${isThirdWarning ? '<p class="third-warning">This is their third warning!</p>' : ''}
+          </td>
+        `;
+        warningsTable.appendChild(row);
+      }
+    };
+
+    const sendToWebhook = (data) => {
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }).catch((err) => console.error('Webhook error:', err));
+    };
+
+    addWarningButton.addEventListener('click', () => {
+      const userId = userIdInput.value.trim();
+      const reason = reasonInput.value.trim();
+
+      if (!userId || !reason) {
+        alert('Please fill out both fields.');
+        return;
+      }
+
+      if (!warnings[userId]) {
+        warnings[userId] = [];
+      }
+
+      warnings[userId].push({ reason, timestamp: new Date().toISOString() });
+      localStorage.setItem('warnings', JSON.stringify(warnings));
+
+      sendToWebhook({ userId, reason, warningsCount: warnings[userId].length });
+
+      userIdInput.value = '';
+      reasonInput.value = '';
+
+      updateWarningsTable();
+    });
+
+    // Initialize the warnings table on page load
+    updateWarningsTable();
+  </script>
+</body>
+</html>
