@@ -25,9 +25,7 @@ const loginPopup = document.getElementById('login-popup');
         showPopup();
       }
     });
-  </script>
-  <script>
-    const DISCORD_CLIENT_ID = '1227271362264043681';
+   const DISCORD_CLIENT_ID = '1227271362264043681';
     const DISCORD_REDIRECT_URI = 'https://saphireshop.xyz';
     const GUILD_ID = '1194870692647293009';
     const MOD_ROLE_ID = '1319962253453430804';
