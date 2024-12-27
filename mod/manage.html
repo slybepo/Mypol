@@ -3,98 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warning System</title>
+  <title>Chat App with Account Creation</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sendbird-uikit/dist/uikit.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-      background-color: #0f172a;
+      padding: 0;
+      background-color: #f5f5f5;
     }
 
-    h1 {
-      text-align: center;
-      color: #38bdf8;
-    }
-
-    .form-container {
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #1e293b;
-    }
-
-    .form-container input, .form-container textarea, .form-container button {
+    #auth-container, #chat-container {
+      display: none;
       width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
     }
 
-    .form-container button {
+    #auth-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
       background-color: #007bff;
       color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    .form-container button:hover {
+    button:hover {
       background-color: #0056b3;
-    }
-
-    .warnings-list {
-      max-width: 800px;
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    .warnings-list th, .warnings-list td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    .warnings-list th {
-      background-color: #f4f4f4;
-    }
-
-    .third-warning {
-      color: red;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Warning System</h1>
-  <div class="form-container">
-    <h2>Add a Warning</h2>
-    <label for="user-id">User ID:</label>
-    <input type="text" id="user-id" placeholder="Enter User ID">
-    
-    <label for="reason">Reason:</label>
-    <textarea id="reason" placeholder="Enter the warning reason"></textarea>
-    
-    <button id="add-warning">Add Warning</button>
+  <!-- Authentication Container -->
+  <div id="auth-container">
+    <h1>Create an Account or Login</h1>
+    <input id="username" type="text" placeholder="Enter your username" required />
+    <button id="register-btn">Register</button>
+    <button id="login-btn">Login</button>
   </div>
 
-  <h2>Warnings</h2>
-  <table class="warnings-list">
-    <thead>
-      <tr>
-        <th>User ID</th>
-        <th>Warnings</th>
-      </tr>
-    </thead>
-    <tbody id="warnings-table">
-      
-    </tbody>
-  </table>
+  <!-- Chat Container -->
+  <div id="chat-container"></div>
 
-  <script src="/warn.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sendbird-uikit/dist/uikit.min.js"></script>
+  <script>
+    // Replace with your Sendbird App ID
+    const APP_ID = "ACEC5186-669C-4D5D-B12A-91D2D89877F6";
+
+    // Mock backend for user management (replace with actual API calls)
+    const users = {};
+
+    function registerUser(username) {
+      const userId = `user_${Math.random().toString(36).substr(2, 9)}`; // Unique user ID
+      if (!users[username]) {
+        users[username] = { userId, username };
+        alert(`User ${username} registered successfully!`);
+        return users[username];
+      } else {
+        alert("Username already exists.");
+        return null;
+      }
+    }
+
+    function loginUser(username) {
+      if (users[username]) {
+        alert(`Welcome back, ${username}!`);
+        return users[username];
+      } else {
+        alert("User not found. Please register first.");
+        return null;
+      }
+    }
+
+    // Handle Registration and Login
+    document.getElementById("register-btn").addEventListener("click", () => {
+      const username = document.getElementById("username").value;
+      const user = registerUser(username);
+      if (user) initializeChat(user);
+    });
+
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const username = document.getElementById("username").value;
+      const user = loginUser(username);
+      if (user) initializeChat(user);
+    });
+
+    // Initialize Sendbird UIKit
+    function initializeChat(user) {
+      document.getElementById("auth-container").style.display = "none";
+      document.getElementById("chat-container").style.display = "block";
+
+      const sbUIKit = SendBirdUIKit.init({
+        appId: APP_ID,
+        userId: user.userId,
+        nickname: user.username,
+      });
+
+      const chatContainer = document.getElementById("chat-container");
+      sbUIKit.render(chatContainer);
+
+      sbUIKit.connect()
+        .then(() => console.log("Connected to Sendbird as", user.username))
+        .catch((err) => console.error("Sendbird connection error:", err));
+    }
+  </script>
 </body>
 </html>
