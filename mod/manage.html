@@ -66,7 +66,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sendbird-uikit/dist/uikit.min.js"></script>
   <script>
     // Replace with your Sendbird App ID
-    const APP_ID = "ACEC5186-669C-4D5D-B12A-91D2D89877F6";
+    const APP_ID = "ACEC5186-669C-4D5D-B12A-91D2D89877F6"; // <-- Add your Sendbird APP ID here!
 
     // Mock backend for user management (replace with actual API calls)
     const users = {};
@@ -111,18 +111,23 @@
       document.getElementById("auth-container").style.display = "none";
       document.getElementById("chat-container").style.display = "block";
 
+      // Initialize Sendbird UIKit
       const sbUIKit = SendBirdUIKit.init({
         appId: APP_ID,
         userId: user.userId,
         nickname: user.username,
       });
 
-      const chatContainer = document.getElementById("chat-container");
-      sbUIKit.render(chatContainer);
-
       sbUIKit.connect()
-        .then(() => console.log("Connected to Sendbird as", user.username))
-        .catch((err) => console.error("Sendbird connection error:", err));
+        .then(() => {
+          console.log("Connected to Sendbird as", user.username);
+          const chatContainer = document.getElementById("chat-container");
+          sbUIKit.render(chatContainer); // Render the chat interface
+        })
+        .catch((err) => {
+          console.error("Sendbird connection error:", err);
+          alert("Failed to connect to Sendbird. Check your APP ID and configuration.");
+        });
     }
   </script>
 </body>
