@@ -66,15 +66,16 @@
   <script src="https://cdn.jsdelivr.net/npm/sendbird-uikit/dist/uikit.min.js"></script>
   <script>
     // Replace with your Sendbird App ID
-    const APP_ID = "ACEC5186-669C-4D5D-B12A-91D2D89877F6"; // <-- Add your Sendbird APP ID here!
+    const APP_ID = "ACEC5186-669C-4D5D-B12A-91D2D89877F6"; // Replace with your actual APP ID
 
-    // Mock backend for user management (replace with actual API calls)
+    // Mock backend for user management
     const users = {};
 
     function registerUser(username) {
-      const userId = `user_${Math.random().toString(36).substr(2, 9)}`; // Unique user ID
+      const userId = `user_${Math.random().toString(36).substr(2, 9)}`;
       if (!users[username]) {
         users[username] = { userId, username };
+        console.log("Registration successful for", username); // Debugging
         alert(`User ${username} registered successfully!`);
         return users[username];
       } else {
@@ -85,6 +86,7 @@
 
     function loginUser(username) {
       if (users[username]) {
+        console.log("Login successful for", username); // Debugging
         alert(`Welcome back, ${username}!`);
         return users[username];
       } else {
@@ -93,41 +95,53 @@
       }
     }
 
-    // Handle Registration and Login
     document.getElementById("register-btn").addEventListener("click", () => {
       const username = document.getElementById("username").value;
+      if (!username) {
+        alert("Please enter a username!");
+        return;
+      }
       const user = registerUser(username);
       if (user) initializeChat(user);
     });
 
     document.getElementById("login-btn").addEventListener("click", () => {
       const username = document.getElementById("username").value;
+      if (!username) {
+        alert("Please enter a username!");
+        return;
+      }
       const user = loginUser(username);
       if (user) initializeChat(user);
     });
 
     // Initialize Sendbird UIKit
     function initializeChat(user) {
+      console.log("Initializing chat for user:", user); // Debugging
       document.getElementById("auth-container").style.display = "none";
-      document.getElementById("chat-container").style.display = "block";
+      document.getElementById("chat-container").style.display = "flex";
 
-      // Initialize Sendbird UIKit
-      const sbUIKit = SendBirdUIKit.init({
-        appId: APP_ID,
-        userId: user.userId,
-        nickname: user.username,
-      });
-
-      sbUIKit.connect()
-        .then(() => {
-          console.log("Connected to Sendbird as", user.username);
-          const chatContainer = document.getElementById("chat-container");
-          sbUIKit.render(chatContainer); // Render the chat interface
-        })
-        .catch((err) => {
-          console.error("Sendbird connection error:", err);
-          alert("Failed to connect to Sendbird. Check your APP ID and configuration.");
+      try {
+        const sbUIKit = SendBirdUIKit.init({
+          appId: APP_ID,
+          userId: user.userId,
+          nickname: user.username,
         });
+
+        sbUIKit.connect()
+          .then(() => {
+            console.log("Sendbird connected as", user.username); // Debugging
+            const chatContainer = document.getElementById("chat-container");
+            sbUIKit.render(chatContainer);
+          })
+          .catch((err) => {
+            console.error("Error during Sendbird connection:", err); // Debugging
+            alert("Failed to connect to Sendbird. Please check your APP ID or try again.");
+          });
+      } catch (error) {
+        console.error("Initialization error:", error); // Debugging
+        alert("An error occurred during initialization. Check console logs for details.");
+      }
     }
   </script>
 </body>
