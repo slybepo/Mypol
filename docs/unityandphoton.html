@@ -4,212 +4,250 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unity & Photon Learning Hub</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* General Styling */
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
-      display: flex;
-      height: 100vh;
-      background: #f3f4f6;
-      color: #1f2937;
-      overflow: hidden;
+      background: radial-gradient(circle at center, #1f1f2e, #121214);
+      color: #e4e4e4;
+      overflow-x: hidden;
     }
 
+    /* Bloom Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(58, 141, 255, 0.4), rgba(0, 0, 0, 0));
+      animation: rotateBloom 8s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotateBloom {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Sidebar Navigation */
     nav {
       width: 300px;
-      background: #1f2937;
-      color: #e5e7eb;
+      background: rgba(31, 31, 46, 0.9);
+      color: #e4e4e4;
       padding: 20px;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+      position: fixed;
+      height: 100vh;
       overflow-y: auto;
       transition: transform 0.3s ease-in-out;
     }
 
     nav h2 {
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: bold;
       margin-bottom: 20px;
+      color: #50c8ff;
     }
 
     nav ul {
       list-style: none;
       padding: 0;
-      margin: 0;
     }
 
     nav ul li {
       margin: 15px 0;
     }
 
-    nav ul li a {
-      text-decoration: none;
-      color: #e5e7eb;
-      padding: 10px 15px;
-      display: block;
+    nav ul li button {
+      width: 100%;
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #e4e4e4;
+      text-align: left;
+      cursor: pointer;
+      padding: 10px;
       border-radius: 5px;
       transition: background 0.3s ease;
     }
 
-    nav ul li a:hover {
+    nav ul li button:hover {
       background: #4b5563;
     }
 
     nav ul li ul {
-      margin-left: 15px;
+      margin-left: 20px;
       margin-top: 10px;
+      display: none;
+    }
+
+    nav ul li ul li {
+      margin: 10px 0;
     }
 
     nav ul li ul li a {
+      text-decoration: none;
       font-size: 14px;
+      color: #50c8ff;
     }
 
+    nav ul li ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Main Content */
     .content {
-      flex: 1;
+      margin-left: 300px;
       padding: 20px;
       overflow-y: auto;
     }
 
     .content h1 {
-      font-size: 28px;
-      color: #1f2937;
+      font-size: 32px;
+      color: #50c8ff;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
     }
 
     .content p {
-      font-size: 16px;
-      line-height: 1.6;
-      margin: 10px 0;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #e4e4e4;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
     }
 
     .code-block {
-      background: #1f2937;
-      color: #e5e7eb;
-      padding: 15px;
-      border-radius: 5px;
-      margin: 20px 0;
+      background: #1e1e2e;
+      padding: 20px;
+      border-radius: 8px;
       font-family: 'Courier New', monospace;
-      position: relative;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      color: #a1e1ff;
+      margin: 20px 0;
       overflow-x: auto;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .code-block pre {
-      margin: 0;
+    .code-block .keyword {
+      color: #ff79c6;
+    }
+
+    .code-block .type {
+      color: #8be9fd;
+    }
+
+    .code-block .function {
+      color: #50fa7b;
+    }
+
+    .code-block .comment {
+      color: #6272a4;
     }
 
     .copy-btn {
       position: absolute;
       top: 10px;
       right: 10px;
-      padding: 5px 10px;
-      font-size: 14px;
-      background: #2563eb;
+      background: #50c8ff;
       color: #fff;
       border: none;
+      padding: 5px 15px;
       border-radius: 5px;
+      font-size: 14px;
       cursor: pointer;
       transition: background 0.3s ease;
     }
 
     .copy-btn:hover {
-      background: #1d4ed8;
+      background: #1e90ff;
     }
 
     /* Animations */
-    .fade-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    @keyframes fadeIn {
+    @keyframes fadeInUp {
       from {
         opacity: 0;
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
+        transform: translateY(0);
       }
+    }
+
+    /* Smooth Scroll */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #50c8ff;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar Navigation -->
+  <!-- Sidebar -->
   <nav>
-    <h2>Learning Hub</h2>
+    <h2>Unity & Photon Docs</h2>
     <ul>
       <li>
-        <a href="#">Unity</a>
+        <button onclick="toggleSubcategories(this)">Unity</button>
         <ul>
-          <li><a href="#" onclick="loadContent('gameobject_basics')">GameObject Basics</a></li>
-          <li><a href="#" onclick="loadContent('unity_variables')">Unity Variables</a></li>
-          <li><a href="#" onclick="loadContent('creating_gameobjects')">Creating GameObjects</a></li>
+          <li><a href="#" onclick="loadContent('unity_gameobject')">GameObjects</a></li>
+          <li><a href="#" onclick="loadContent('unity_variables')">Variables</a></li>
+          <li><a href="#" onclick="loadContent('unity_methods')">Methods</a></li>
         </ul>
       </li>
       <li>
-        <a href="#">Photon</a>
+        <button onclick="toggleSubcategories(this)">Photon</button>
         <ul>
-          <li><a href="#" onclick="loadContent('photon_intro')">Photon Introduction</a></li>
-          <li><a href="#" onclick="loadContent('networking_objects')">Networking Objects</a></li>
-          <li><a href="#" onclick="loadContent('audio_streaming')">Audio Streaming</a></li>
+          <li><a href="#" onclick="loadContent('photon_intro')">Introduction</a></li>
+          <li><a href="#" onclick="loadContent('photon_networking')">Networking</a></li>
+          <li><a href="#" onclick="loadContent('photon_audio')">Audio Streaming</a></li>
         </ul>
       </li>
     </ul>
   </nav>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <div class="content" id="content">
-    <h1>Welcome to Unity & Photon Learning Hub</h1>
-    <p>Select a topic from the menu to start learning.</p>
+    <h1>Welcome to Unity & Photon Docs</h1>
+    <p>Select a category to explore detailed documentation with code examples.</p>
   </div>
 
   <script>
-    // Content Mapping
-    const contentMap = {
-      gameobject_basics: `
-        <h1>Unity GameObject Basics</h1>
-        <p>GameObjects are the building blocks of a Unity scene. They act as containers for Components, which define behavior and properties.</p>
-        <div class="code-block">
-          <pre>
-using UnityEngine;
-
-public class Example : MonoBehaviour {
-    void Start() {
-        GameObject myObject = new GameObject("MyObject");
-        Debug.Log("GameObject Created: " + myObject.name);
+    // Toggle Subcategories
+    function toggleSubcategories(button) {
+      const subcategories = button.nextElementSibling;
+      subcategories.style.display = subcategories.style.display === 'block' ? 'none' : 'block';
     }
-}
-          </pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-      `,
-      unity_variables: `
-        <h1>Unity Variables</h1>
-        <p>Unity provides variables to manipulate GameObjects and Components. Example:</p>
+
+    // Load Content
+    const content = {
+      unity_gameobject: `
+        <h1>Unity GameObjects</h1>
+        <p>A GameObject is a container for components that define its behavior and appearance.</p>
         <div class="code-block">
           <pre>
-using UnityEngine;
+<span class="keyword">using</span> UnityEngine;
 
-public class Example : MonoBehaviour {
-    public GameObject myGameObject;
-
-    void Start() {
-        myGameObject.SetActive(true);
-        Debug.Log("GameObject is active: " + myGameObject.activeSelf);
-    }
-}
-          </pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-      `,
-      creating_gameobjects: `
-        <h1>Creating GameObjects</h1>
-        <p>You can create GameObjects at runtime and customize their properties. Example:</p>
-        <div class="code-block">
-          <pre>
-using UnityEngine;
-
-public class CreateObject : MonoBehaviour {
-    void Start() {
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = new Vector3(0, 1, 0);
+<span class="keyword">public class</span> <span class="type">GameObjectExample</span> : MonoBehaviour 
+{
+    <span class="keyword">void</span> Start() 
+    {
+        <span class="type">GameObject</span> obj = <span class="keyword">new</span> <span class="type">GameObject</span>("MyObject");
     }
 }
           </pre>
@@ -218,48 +256,16 @@ public class CreateObject : MonoBehaviour {
       `,
       photon_intro: `
         <h1>Photon Introduction</h1>
-        <p>Photon is a networking engine for real-time multiplayer games. Example:</p>
+        <p>Photon is a networking solution for real-time multiplayer games.</p>
         <div class="code-block">
           <pre>
-using Photon.Pun;
+<span class="keyword">using</span> Photon.Pun;
 
-public class ConnectToServer : MonoBehaviour {
-    void Start() {
+<span class="keyword">public class</span> <span class="type">PhotonConnect</span> : MonoBehaviour 
+{
+    <span class="keyword">void</span> Start() 
+    {
         PhotonNetwork.ConnectUsingSettings();
-        Debug.Log("Connecting to Photon Server...");
-    }
-}
-          </pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-      `,
-      networking_objects: `
-        <h1>Networking Objects</h1>
-        <p>Photon allows you to synchronize GameObjects across clients. Example:</p>
-        <div class="code-block">
-          <pre>
-using Photon.Pun;
-
-public class SpawnObject : MonoBehaviour {
-    void Start() {
-        PhotonNetwork.Instantiate("MyPrefab", Vector3.zero, Quaternion.identity);
-    }
-}
-          </pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-      `,
-      audio_streaming: `
-        <h1>Audio Streaming</h1>
-        <p>Use Photon Voice for audio streaming in multiplayer games. Example:</p>
-        <div class="code-block">
-          <pre>
-using Photon.Voice.Unity;
-
-public class AudioExample : MonoBehaviour {
-    void Start() {
-        PhotonVoiceNetwork.Instance.ConnectUsingSettings();
-        Debug.Log("Voice connected!");
     }
 }
           </pre>
@@ -268,18 +274,14 @@ public class AudioExample : MonoBehaviour {
       `,
     };
 
-    // Load Content Dynamically
     function loadContent(topic) {
-      const contentDiv = document.getElementById('content');
-      contentDiv.classList.remove('fade-in');
-      contentDiv.innerHTML = contentMap[topic] || '<p>Content not found!</p>';
-      setTimeout(() => contentDiv.classList.add('fade-in'), 100);
+      const container = document.getElementById('content');
+      container.innerHTML = content[topic] || '<h1>Content not found!</h1>';
     }
 
-    // Copy Code Functionality
     function copyCode(button) {
-      const codeBlock = button.previousElementSibling.textContent;
-      navigator.clipboard.writeText(codeBlock);
+      const code = button.previousElementSibling.textContent;
+      navigator.clipboard.writeText(code);
       button.textContent = 'Copied!';
       setTimeout(() => (button.textContent = 'Copy'), 2000);
     }
