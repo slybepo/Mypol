@@ -47,6 +47,11 @@
       height: 100vh;
       overflow-y: auto;
       transition: transform 0.3s ease-in-out;
+      transform: translateX(0);
+    }
+
+    nav.closed {
+      transform: translateX(-300px);
     }
 
     nav h2 {
@@ -100,6 +105,23 @@
 
     nav ul li ul li a:hover {
       text-decoration: underline;
+    }
+
+    /* Close Sidebar Button */
+    .close-sidebar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #50c8ff;
+      color: #fff;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .close-sidebar:hover {
+      background: #1e90ff;
     }
 
     /* Main Content */
@@ -199,7 +221,8 @@
 </head>
 <body>
   <!-- Sidebar -->
-  <nav>
+  <nav id="sidebar">
+    <button class="close-sidebar" onclick="toggleSidebar()">☰</button>
     <h2>Unity & Photon Docs</h2>
     <ul>
       <li>
@@ -207,7 +230,6 @@
         <ul>
           <li><a href="#" onclick="loadContent('unity_gameobject')">GameObjects</a></li>
           <li><a href="#" onclick="loadContent('unity_variables')">Variables</a></li>
-          <li><a href="#" onclick="loadContent('unity_methods')">Methods</a></li>
         </ul>
       </li>
       <li>
@@ -215,7 +237,6 @@
         <ul>
           <li><a href="#" onclick="loadContent('photon_intro')">Introduction</a></li>
           <li><a href="#" onclick="loadContent('photon_networking')">Networking</a></li>
-          <li><a href="#" onclick="loadContent('photon_audio')">Audio Streaming</a></li>
         </ul>
       </li>
     </ul>
@@ -228,6 +249,11 @@
   </div>
 
   <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('closed');
+    }
+
     // Toggle Subcategories
     function toggleSubcategories(button) {
       const subcategories = button.nextElementSibling;
@@ -238,33 +264,30 @@
     const content = {
       unity_gameobject: `
         <h1>Unity GameObjects</h1>
-        <p>A GameObject is a container for components that define its behavior and appearance.</p>
+        <p>A GameObject is a container for components that define its behavior and appearance. Below is an example of how to create one dynamically:</p>
         <div class="code-block">
           <pre>
 <span class="keyword">using</span> UnityEngine;
 
-<span class="keyword">public class</span> <span class="type">GameObjectExample</span> : MonoBehaviour 
-{
-    <span class="keyword">void</span> Start() 
-    {
-        <span class="type">GameObject</span> obj = <span class="keyword">new</span> <span class="type">GameObject</span>("MyObject");
+<span class="keyword">public class</span> <span class="type">GameObjectExample</span> : MonoBehaviour {
+    <span class="keyword">void</span> Start() {
+        <span class="type">GameObject</span> newObj = <span class="keyword">new</span> <span class="type">GameObject</span>("DynamicObject");
     }
 }
           </pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
+        <p>GameObjects can hold scripts, renderers, colliders, and other components to make them functional in a Unity scene.</p>
       `,
       photon_intro: `
         <h1>Photon Introduction</h1>
-        <p>Photon is a networking solution for real-time multiplayer games.</p>
+        <p>Photon is a networking engine that simplifies real-time multiplayer game development. Here's an example to connect to a Photon server:</p>
         <div class="code-block">
           <pre>
 <span class="keyword">using</span> Photon.Pun;
 
-<span class="keyword">public class</span> <span class="type">PhotonConnect</span> : MonoBehaviour 
-{
-    <span class="keyword">void</span> Start() 
-    {
+<span class="keyword">public class</span> <span class="type">PhotonConnect</span> : MonoBehaviour {
+    <span class="keyword">void</span> Start() {
         PhotonNetwork.ConnectUsingSettings();
     }
 }
@@ -276,7 +299,19 @@
 
     function loadContent(topic) {
       const container = document.getElementById('content');
-      container.innerHTML = content[topic] || '<h1>Content not found!</h1>';
+      container.innerHTML = content[topic] || `
+        <h1>Content not found!</h1>
+        <p>The requested content does not exist. Try selecting a valid category from the menu.</p>
+        <div class="code-block">
+          <pre>
+// Example Placeholder Code
+<span class="keyword">void</span> Placeholder(<span class="type">int</span> id) {
+    Debug.Log("This is placeholder content!");
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+      `;
     }
 
     function copyCode(button) {
