@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DreamWeave Unity & Photon Learning Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      color: #1e293b;
+      background: #f1f5f9;
+    }
+
+    nav {
+      width: 250px;
+      background: #1e293b;
+      color: #e0f2fe;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin: 10px 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #e0f2fe;
+      padding: 8px 10px;
+      display: block;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    nav ul li a:hover {
+      background: #334155;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .content h1 {
+      font-size: 24px;
+      color: #1e293b;
+    }
+
+    .code-block {
+      background: #1e293b;
+      color: #e0f2fe;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .code-block .keyword {
+      color: #ff79c6;
+    }
+
+    .code-block .string {
+      color: #f1fa8c;
+    }
+
+    .code-block .comment {
+      color: #6272a4;
+    }
+
+    .code-block .function {
+      color: #8be9fd;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h2>Unity & Photon Docs</h2>
+    <ul>
+      <li><a href="#" onclick="loadContent('unity_basics')">Unity Basics</a></li>
+      <li><a href="#" onclick="loadContent('photon_intro')">Photon Introduction</a></li>
+      <li><a href="#" onclick="loadContent('unity_variables')">Unity Variables</a></li>
+      <li><a href="#" onclick="loadContent('photon_networking')">Photon Networking</a></li>
+      <li><a href="#" onclick="loadContent('unity_components')">Unity Components</a></li>
+      <li><a href="#" onclick="loadContent('photon_matchmaking')">Photon Matchmaking</a></li>
+    </ul>
+  </nav>
+
+  <div class="content" id="content">
+    <h1>Welcome to Unity & Photon Learning Hub</h1>
+    <p>Select a topic from the navigation menu to begin exploring.</p>
+  </div>
+
+  <script>
+    const contentMap = {
+      unity_basics: `
+        <h1>Unity Basics</h1>
+        <p>Unity is a cross-platform game engine used to develop 2D and 3D games. Here's a basic Unity script:</p>
+        <div class="code-block">
+          <span class="keyword">using</span> UnityEngine;<br><br>
+          <span class="keyword">public class</span> <span class="function">Example</span> : MonoBehaviour {<br>
+          &nbsp;&nbsp;<span class="comment">// Start is called before the first frame update</span><br>
+          &nbsp;&nbsp;<span class="keyword">void</span> Start() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(<span class="string">"Hello, Unity!"</span>);<br>
+          &nbsp;&nbsp;}<br><br>
+          &nbsp;&nbsp;<span class="comment">// Update is called once per frame</span><br>
+          &nbsp;&nbsp;<span class="keyword">void</span> Update() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(Vector3.forward * Time.deltaTime);<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      `,
+      photon_intro: `
+        <h1>Getting Started with Photon</h1>
+        <p>Photon Engine is a networking solution for multiplayer games. Here's how to initialize Photon:</p>
+        <div class="code-block">
+          <span class="keyword">using</span> Photon.Pun;<br><br>
+          <span class="function">void</span> Start() {<br>
+          &nbsp;&nbsp;PhotonNetwork.ConnectUsingSettings();<br>
+          }
+        </div>
+      `,
+      unity_variables: `
+        <h1>Unity Variables</h1>
+        <p>Unity provides built-in variables for GameObjects:</p>
+        <div class="code-block">
+          <span class="keyword">using</span> UnityEngine;<br><br>
+          <span class="keyword">public class</span> <span class="function">Example</span> : MonoBehaviour {<br>
+          &nbsp;&nbsp;<span class="keyword">public GameObject</span> player;<br><br>
+          &nbsp;&nbsp;<span class="keyword">void</span> Start() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;player.SetActive(<span class="keyword">true</span>);<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      `,
+      photon_networking: `
+        <h1>Photon Networking</h1>
+        <p>Photon Networking allows you to synchronize player actions in real time:</p>
+        <div class="code-block">
+          <span class="comment">// Spawning a networked player</span><br>
+          PhotonNetwork.Instantiate(<span class="string">"PlayerPrefab"</span>, spawnPosition, Quaternion.identity);
+        </div>
+      `,
+      unity_components: `
+        <h1>Unity Components</h1>
+        <p>Unity components define behaviors for GameObjects. Example:</p>
+        <div class="code-block">
+          <span class="keyword">using</span> UnityEngine;<br><br>
+          <span class="keyword">public class</span> <span class="function">RotateObject</span> : MonoBehaviour {<br>
+          &nbsp;&nbsp;<span class="keyword">public float</span> rotationSpeed = 100f;<br><br>
+          &nbsp;&nbsp;<span class="keyword">void</span> Update() {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      `,
+      photon_matchmaking: `
+        <h1>Photon Matchmaking</h1>
+        <p>Matchmaking with Photon helps players join rooms. Example:</p>
+        <div class="code-block">
+          <span class="comment">// Join or create a room</span><br>
+          PhotonNetwork.JoinOrCreateRoom(<span class="string">"RoomName"</span>, <span class="keyword">new</span> RoomOptions(), TypedLobby.Default);
+        </div>
+      `,
+    };
+
+    function loadContent(topic) {
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = contentMap[topic] || '<p>Content not found!</p>';
+    }
+  </script>
+</body>
+</html>
