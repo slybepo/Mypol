@@ -3,52 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DreamWeave Unity & Photon Learning Hub</title>
+  <title>Unity & Photon Learning Hub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* General Styling */
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       display: flex;
       height: 100vh;
-      color: #1e293b;
-      background: #f1f5f9;
+      background: #f3f4f6;
+      color: #1f2937;
+      overflow: hidden;
     }
 
     nav {
-      width: 250px;
-      background: #1e293b;
-      color: #e0f2fe;
+      width: 300px;
+      background: #1f2937;
+      color: #e5e7eb;
       padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
       overflow-y: auto;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
     }
 
     nav h2 {
-      font-size: 18px;
+      font-size: 20px;
       margin-bottom: 20px;
     }
 
     nav ul {
       list-style: none;
       padding: 0;
+      margin: 0;
     }
 
     nav ul li {
-      margin: 10px 0;
+      margin: 15px 0;
     }
 
     nav ul li a {
       text-decoration: none;
-      color: #e0f2fe;
-      padding: 8px 10px;
+      color: #e5e7eb;
+      padding: 10px 15px;
       display: block;
       border-radius: 5px;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
     }
 
     nav ul li a:hover {
-      background: #334155;
+      background: #4b5563;
+    }
+
+    nav ul li ul {
+      margin-left: 15px;
+      margin-top: 10px;
+    }
+
+    nav ul li ul li a {
+      font-size: 14px;
     }
 
     .content {
@@ -58,131 +71,217 @@
     }
 
     .content h1 {
-      font-size: 24px;
-      color: #1e293b;
+      font-size: 28px;
+      color: #1f2937;
+    }
+
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 10px 0;
     }
 
     .code-block {
-      background: #1e293b;
-      color: #e0f2fe;
-      padding: 10px;
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 15px;
       border-radius: 5px;
       margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       overflow-x: auto;
-      font-family: "Courier New", Courier, monospace;
     }
 
-    .code-block .keyword {
-      color: #ff79c6;
+    .code-block pre {
+      margin: 0;
     }
 
-    .code-block .string {
-      color: #f1fa8c;
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      font-size: 14px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    .code-block .comment {
-      color: #6272a4;
+    .copy-btn:hover {
+      background: #1d4ed8;
     }
 
-    .code-block .function {
-      color: #8be9fd;
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar Navigation -->
   <nav>
-    <h2>Unity & Photon Docs</h2>
+    <h2>Learning Hub</h2>
     <ul>
-      <li><a href="#" onclick="loadContent('unity_basics')">Unity Basics</a></li>
-      <li><a href="#" onclick="loadContent('photon_intro')">Photon Introduction</a></li>
-      <li><a href="#" onclick="loadContent('unity_variables')">Unity Variables</a></li>
-      <li><a href="#" onclick="loadContent('photon_networking')">Photon Networking</a></li>
-      <li><a href="#" onclick="loadContent('unity_components')">Unity Components</a></li>
-      <li><a href="#" onclick="loadContent('photon_matchmaking')">Photon Matchmaking</a></li>
+      <li>
+        <a href="#">Unity</a>
+        <ul>
+          <li><a href="#" onclick="loadContent('gameobject_basics')">GameObject Basics</a></li>
+          <li><a href="#" onclick="loadContent('unity_variables')">Unity Variables</a></li>
+          <li><a href="#" onclick="loadContent('creating_gameobjects')">Creating GameObjects</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Photon</a>
+        <ul>
+          <li><a href="#" onclick="loadContent('photon_intro')">Photon Introduction</a></li>
+          <li><a href="#" onclick="loadContent('networking_objects')">Networking Objects</a></li>
+          <li><a href="#" onclick="loadContent('audio_streaming')">Audio Streaming</a></li>
+        </ul>
+      </li>
     </ul>
   </nav>
 
+  <!-- Main Content Area -->
   <div class="content" id="content">
     <h1>Welcome to Unity & Photon Learning Hub</h1>
-    <p>Select a topic from the navigation menu to begin exploring.</p>
+    <p>Select a topic from the menu to start learning.</p>
   </div>
 
   <script>
+    // Content Mapping
     const contentMap = {
-      unity_basics: `
-        <h1>Unity Basics</h1>
-        <p>Unity is a cross-platform game engine used to develop 2D and 3D games. Here's a basic Unity script:</p>
+      gameobject_basics: `
+        <h1>Unity GameObject Basics</h1>
+        <p>GameObjects are the building blocks of a Unity scene. They act as containers for Components, which define behavior and properties.</p>
         <div class="code-block">
-          <span class="keyword">using</span> UnityEngine;<br><br>
-          <span class="keyword">public class</span> <span class="function">Example</span> : MonoBehaviour {<br>
-          &nbsp;&nbsp;<span class="comment">// Start is called before the first frame update</span><br>
-          &nbsp;&nbsp;<span class="keyword">void</span> Start() {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(<span class="string">"Hello, Unity!"</span>);<br>
-          &nbsp;&nbsp;}<br><br>
-          &nbsp;&nbsp;<span class="comment">// Update is called once per frame</span><br>
-          &nbsp;&nbsp;<span class="keyword">void</span> Update() {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(Vector3.forward * Time.deltaTime);<br>
-          &nbsp;&nbsp;}<br>
-          }
-        </div>
-      `,
-      photon_intro: `
-        <h1>Getting Started with Photon</h1>
-        <p>Photon Engine is a networking solution for multiplayer games. Here's how to initialize Photon:</p>
-        <div class="code-block">
-          <span class="keyword">using</span> Photon.Pun;<br><br>
-          <span class="function">void</span> Start() {<br>
-          &nbsp;&nbsp;PhotonNetwork.ConnectUsingSettings();<br>
-          }
+          <pre>
+using UnityEngine;
+
+public class Example : MonoBehaviour {
+    void Start() {
+        GameObject myObject = new GameObject("MyObject");
+        Debug.Log("GameObject Created: " + myObject.name);
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       `,
       unity_variables: `
         <h1>Unity Variables</h1>
-        <p>Unity provides built-in variables for GameObjects:</p>
+        <p>Unity provides variables to manipulate GameObjects and Components. Example:</p>
         <div class="code-block">
-          <span class="keyword">using</span> UnityEngine;<br><br>
-          <span class="keyword">public class</span> <span class="function">Example</span> : MonoBehaviour {<br>
-          &nbsp;&nbsp;<span class="keyword">public GameObject</span> player;<br><br>
-          &nbsp;&nbsp;<span class="keyword">void</span> Start() {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;player.SetActive(<span class="keyword">true</span>);<br>
-          &nbsp;&nbsp;}<br>
-          }
+          <pre>
+using UnityEngine;
+
+public class Example : MonoBehaviour {
+    public GameObject myGameObject;
+
+    void Start() {
+        myGameObject.SetActive(true);
+        Debug.Log("GameObject is active: " + myGameObject.activeSelf);
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       `,
-      photon_networking: `
-        <h1>Photon Networking</h1>
-        <p>Photon Networking allows you to synchronize player actions in real time:</p>
+      creating_gameobjects: `
+        <h1>Creating GameObjects</h1>
+        <p>You can create GameObjects at runtime and customize their properties. Example:</p>
         <div class="code-block">
-          <span class="comment">// Spawning a networked player</span><br>
-          PhotonNetwork.Instantiate(<span class="string">"PlayerPrefab"</span>, spawnPosition, Quaternion.identity);
+          <pre>
+using UnityEngine;
+
+public class CreateObject : MonoBehaviour {
+    void Start() {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = new Vector3(0, 1, 0);
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       `,
-      unity_components: `
-        <h1>Unity Components</h1>
-        <p>Unity components define behaviors for GameObjects. Example:</p>
+      photon_intro: `
+        <h1>Photon Introduction</h1>
+        <p>Photon is a networking engine for real-time multiplayer games. Example:</p>
         <div class="code-block">
-          <span class="keyword">using</span> UnityEngine;<br><br>
-          <span class="keyword">public class</span> <span class="function">RotateObject</span> : MonoBehaviour {<br>
-          &nbsp;&nbsp;<span class="keyword">public float</span> rotationSpeed = 100f;<br><br>
-          &nbsp;&nbsp;<span class="keyword">void</span> Update() {<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);<br>
-          &nbsp;&nbsp;}<br>
-          }
+          <pre>
+using Photon.Pun;
+
+public class ConnectToServer : MonoBehaviour {
+    void Start() {
+        PhotonNetwork.ConnectUsingSettings();
+        Debug.Log("Connecting to Photon Server...");
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       `,
-      photon_matchmaking: `
-        <h1>Photon Matchmaking</h1>
-        <p>Matchmaking with Photon helps players join rooms. Example:</p>
+      networking_objects: `
+        <h1>Networking Objects</h1>
+        <p>Photon allows you to synchronize GameObjects across clients. Example:</p>
         <div class="code-block">
-          <span class="comment">// Join or create a room</span><br>
-          PhotonNetwork.JoinOrCreateRoom(<span class="string">"RoomName"</span>, <span class="keyword">new</span> RoomOptions(), TypedLobby.Default);
+          <pre>
+using Photon.Pun;
+
+public class SpawnObject : MonoBehaviour {
+    void Start() {
+        PhotonNetwork.Instantiate("MyPrefab", Vector3.zero, Quaternion.identity);
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+      `,
+      audio_streaming: `
+        <h1>Audio Streaming</h1>
+        <p>Use Photon Voice for audio streaming in multiplayer games. Example:</p>
+        <div class="code-block">
+          <pre>
+using Photon.Voice.Unity;
+
+public class AudioExample : MonoBehaviour {
+    void Start() {
+        PhotonVoiceNetwork.Instance.ConnectUsingSettings();
+        Debug.Log("Voice connected!");
+    }
+}
+          </pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       `,
     };
 
+    // Load Content Dynamically
     function loadContent(topic) {
       const contentDiv = document.getElementById('content');
+      contentDiv.classList.remove('fade-in');
       contentDiv.innerHTML = contentMap[topic] || '<p>Content not found!</p>';
+      setTimeout(() => contentDiv.classList.add('fade-in'), 100);
+    }
+
+    // Copy Code Functionality
+    function copyCode(button) {
+      const codeBlock = button.previousElementSibling.textContent;
+      navigator.clipboard.writeText(codeBlock);
+      button.textContent = 'Copied!';
+      setTimeout(() => (button.textContent = 'Copy'), 2000);
     }
   </script>
 </body>
