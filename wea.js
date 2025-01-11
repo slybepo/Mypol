@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       weatherInfo.innerHTML = "<p>Failed to fetch weather data.</p>";
     } finally {
-      loadingScreen.style.display = "block";
+      //here nonz
     }
   };
 
