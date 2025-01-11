@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futuristic Weather Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="wea.js"></script>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">Loading...</div>
+
+  <!-- Navigation Menu -->
+  <nav>
+    <h1>Weather Dashboard</h1>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#weather">Weather</a></li>
+      <li><a href="#alerts">Alerts</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Section -->
+  <main>
+    <!-- User Input Form -->
+    <section id="user-form">
+      <h2>Enter Your Location</h2>
+      <form id="location-form">
+        <input type="text" id="country" placeholder="Country" required>
+        <input type="text" id="city" placeholder="City" required>
+        <button type="submit">Save</button>
+      </form>
+    </section>
+
+    <!-- Weather Display -->
+    <section id="weather-display">
+      <h2>Weather Information</h2>
+      <div id="weather-info">
+        <p>Enter a location to see the weather.</p>
+      </div>
+    </section>
+
+    <!-- Alerts Section -->
+    <section id="alerts-section">
+      <h2>Weather Alerts</h2>
+      <div id="alerts"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Futuristic Weather Dashboard</p>
+  </footer>
+</body>
+</html>
