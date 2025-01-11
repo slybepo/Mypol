@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to fetch weather data
   const fetchWeather = async (country, city) => {
-    const apiKey = "your_openweather_api_key"; // Replace with your API key
+    const apiKey = "fb8d066b44d875c0449877403fa684ec"; // Replace with your API key
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=metric`;
     try {
       loadingScreen.style.display = "flex";
