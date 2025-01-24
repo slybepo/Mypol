@@ -10,14 +10,41 @@
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: #fff;
+    }
+
+    .navbar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #00ffff;
+    }
+
+    .navbar button {
+      background: #00aaff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .navbar button:hover {
+      background: #007acc;
     }
 
     .container {
-      width: 400px;
+      max-width: 800px;
+      margin: 20px auto;
       background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 10px;
@@ -70,6 +97,7 @@
       padding: 15px;
       border-radius: 5px;
       margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     }
 
     .post h3 {
@@ -83,7 +111,6 @@
     }
   </style>
   <script type="module">
-    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
@@ -237,19 +264,27 @@
         const post = doc.data();
         const postElement = document.createElement("div");
         postElement.className = "post";
-        postElement.innerHTML = `
+        postElement.innerHTML = 
           <h3>${post.title}</h3>
           <p>${post.description}</p>
           <p class="user-info">Posted by ${post.createdBy} (${post.role})</p>
-        `;
+        ;
         postsContainer.appendChild(postElement);
       });
-    }
+                                  }
+    // Firebase and DOM code remains the same as in your original script
   </script>
 </head>
 <body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <h1>Admin Post System</h1>
+    <button id="logoutButton" style="display: none;">Logout</button>
+  </div>
+
+  <!-- Main Content -->
   <div class="container">
-    <h2>Admin Post System</h2>
+    <h2>Welcome!</h2>
 
     <!-- Registration Form -->
     <form id="registerForm">
@@ -276,9 +311,6 @@
 
     <!-- Posts -->
     <div id="postsContainer"></div>
-
-    <!-- Logout Button -->
-    <button id="logoutButton" style="margin-top: 20px; display: none;">Logout</button>
   </div>
 </body>
 </html>
