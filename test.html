@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Post System with Login</title>
+  <title>Admin Post System</title>
   <style>
     body {
       margin: 0;
@@ -33,7 +33,7 @@
       margin-bottom: 15px;
     }
 
-    input, button {
+    input, button, textarea {
       width: 100%;
       padding: 10px;
       border: none;
@@ -86,7 +86,7 @@
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
     // Firebase Configuration
     const firebaseConfig = {
@@ -94,7 +94,7 @@
       authDomain: "nexaverse-eeb07.firebaseapp.com",
       databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
       projectId: "nexaverse-eeb07",
-      storageBucket: "nexaverse-eeb07.firebasestorage.app",
+      storageBucket: "nexaverse-eeb07.appspot.com",
       messagingSenderId: "686342300627",
       appId: "1:686342300627:web:90522d8f1129fb00b08526"
     };
@@ -119,8 +119,9 @@
     // Toggle Between Register and Login Forms
     formToggle.addEventListener("click", () => {
       isRegistering = !isRegistering;
-      document.querySelector("#registerForm").style.display = isRegistering ? "block" : "none";
-      document.querySelector("#loginForm").style.display = isRegistering ? "none" : "block";
+      registerForm.style.display = isRegistering ? "block" : "none";
+      loginForm.style.display = isRegistering ? "none" : "block";
+      formToggle.textContent = isRegistering ? "Switch to Login" : "Switch to Register";
     });
 
     // Registration
@@ -168,18 +169,34 @@
       if (user) {
         currentUser = user;
 
-        // Fetch role from Firestore
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          userRole = userDoc.data().role;
+        // Hide forms and show main content
+        registerForm.style.display = "none";
+        loginForm.style.display = "none";
+        formToggle.style.display = "none";
+        logoutButton.style.display = "block";
 
-          if (userRole === "admin") {
-            postForm.style.display = "block"; // Admin-only form
+        try {
+          // Fetch user role from Firestore
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            userRole = userDoc.data().role;
+
+            if (userRole === "admin") {
+              postForm.style.display = "block"; // Admin-only form
+            }
           }
+          loadPosts(); // Load posts for all users
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
         }
-        loadPosts();
       } else {
+        // If no user is logged in, show forms and hide content
         currentUser = null;
+        registerForm.style.display = "block";
+        loginForm.style.display = "none";
+        formToggle.style.display = "block";
+        logoutButton.style.display = "none";
+        postForm.style.display = "none";
         postsContainer.innerHTML = "<p>Please log in to view posts.</p>";
       }
     });
