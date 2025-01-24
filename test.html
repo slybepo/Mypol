@@ -3,47 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Futuristic Chat</title>
+  <title>Admin Post System</title>
   <style>
-    /* Modern Futuristic Design */
+    /* Modern Style */
     body {
       margin: 0;
-      font-family: "Arial", sans-serif;
-      background: linear-gradient(135deg, #1a2a3a, #2c5364);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: #fff;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 20px;
     }
 
     .container {
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
+      max-width: 800px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.8);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     }
 
     h2 {
       margin-bottom: 20px;
       color: #00ffff;
-      font-weight: bold;
-      font-size: 24px;
     }
 
     .form-group {
       margin-bottom: 15px;
     }
 
-    input {
+    input, textarea {
       width: 100%;
       padding: 10px;
       border: none;
       border-radius: 5px;
-      outline: none;
       margin-bottom: 10px;
       font-size: 16px;
     }
@@ -62,40 +59,52 @@
       background: #007acc;
     }
 
-    .chat {
-      margin-top: 20px;
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #fff;
-      padding: 10px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .message {
-      padding: 10px;
-      margin: 5px 0;
+    .post {
       background: #222;
+      padding: 15px;
       border-radius: 5px;
+      margin-top: 15px;
     }
 
-    a {
-      color: #00ffff;
-      text-decoration: none;
-      font-weight: bold;
-      display: block;
+    .post h3 {
+      margin: 0;
+    }
+
+    .comment-section {
       margin-top: 10px;
     }
 
-    a:hover {
-      color: #00aaff;
+    .audio-player {
+      background: #333;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .user-info {
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    .like-btn {
+      background: #444;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .like-btn:hover {
+      background: #555;
     }
   </style>
   <script type="module">
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
     // Your Firebase Configuration
     const firebaseConfig = {
@@ -114,137 +123,109 @@
     const db = getFirestore(app);
 
     // DOM Elements
-    const loginForm = document.querySelector("#loginForm");
-    const registerForm = document.querySelector("#registerForm");
-    const chatBox = document.querySelector("#chatBox");
-    const chatMessages = document.querySelector("#chatMessages");
-    const messageInput = document.querySelector("#messageInput");
-    const sendMessageButton = document.querySelector("#sendMessage");
+    const postForm = document.querySelector("#postForm");
+    const postsContainer = document.querySelector("#postsContainer");
 
-    // Redirect Logic
-    onAuthStateChanged(auth, (user) => {
+    let currentUser = null;
+    let userRole = "";
+
+    // Auth State Change
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is logged in
-        showChat();
+        currentUser = user;
+
+        // Fetch the user's role from Firestore
+        const userDoc = await getDocs(doc(db, "users", user.uid));
+        userRole = userDoc.data().role;
+
+        if (userRole === "admin") {
+          document.querySelector("#postForm").style.display = "block";
+        }
+        loadPosts();
       } else {
-        // No user is logged in
-        showLogin();
+        currentUser = null;
+        postsContainer.innerHTML = "<p>Please log in to view posts.</p>";
       }
     });
 
-    // Show Login/Register
-    function showLogin() {
-      loginForm.style.display = "block";
-      registerForm.style.display = "block";
-      chatBox.style.display = "none";
-    }
-
-    // Show Chat
-    function showChat() {
-      loginForm.style.display = "none";
-      registerForm.style.display = "none";
-      chatBox.style.display = "block";
-    }
-
-    // Login functionality
-    loginForm.addEventListener("submit", async (e) => {
+    // Post Form Submission
+    postForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.querySelector("#loginEmail").value;
-      const password = document.querySelector("#loginPassword").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Logged in successfully!");
-      } catch (error) {
-        alert("Login failed: " + error.message);
-      }
-    });
+      const title = document.querySelector("#postTitle").value;
+      const description = document.querySelector("#postDescription").value;
+      const file = document.querySelector("#postFile").files[0];
 
-    // Register functionality
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.querySelector("#registerEmail").value;
-      const password = document.querySelector("#registerPassword").value;
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Registered successfully!");
-      } catch (error) {
-        alert("Registration failed: " + error.message);
-      }
-    });
-
-    // Chat functionality
-    sendMessageButton.addEventListener("click", async () => {
-      const message = messageInput.value;
-      if (!message) return;
-      try {
-        await addDoc(collection(db, "messages"), {
-          text: message,
+        // Save post to Firestore
+        await addDoc(collection(db, "posts"), {
+          title,
+          description,
+          fileType: file ? file.type : null,
+          createdBy: currentUser.email,
+          role: userRole,
+          likes: 0,
           createdAt: new Date(),
         });
-        messageInput.value = "";
+        alert("Post created!");
+        postForm.reset();
+        loadPosts();
       } catch (error) {
-        alert("Failed to send message: " + error.message);
+        alert("Failed to create post: " + error.message);
       }
     });
 
-    // Listen for new messages
-    onSnapshot(collection(db, "messages"), (snapshot) => {
-      chatMessages.innerHTML = "";
-      snapshot.docs.forEach((doc) => {
-        const message = doc.data();
-        const messageElement = document.createElement("div");
-        messageElement.className = "message";
-        messageElement.textContent = message.text;
-        chatMessages.appendChild(messageElement);
+    // Load Posts
+    async function loadPosts() {
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      postsContainer.innerHTML = "";
+      querySnapshot.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.className = "post";
+        postElement.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.description}</p>
+          <p class="user-info">Posted by ${post.createdBy} (${post.role})</p>
+          <button class="like-btn">Like (${post.likes})</button>
+        `;
+        if (userRole === "admin") {
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete Post";
+          deleteBtn.addEventListener("click", () => deletePost(doc.id));
+          postElement.appendChild(deleteBtn);
+        }
+        postsContainer.appendChild(postElement);
       });
-    });
+    }
 
-    // Logout functionality
-    document.querySelector("#logoutButton").addEventListener("click", async () => {
+    // Delete Post
+    async function deletePost(postId) {
       try {
-        await signOut(auth);
-        alert("Logged out successfully!");
-        showLogin();
+        await deleteDoc(doc(db, "posts", postId));
+        alert("Post deleted!");
+        loadPosts();
       } catch (error) {
-        alert("Logout failed: " + error.message);
+        alert("Failed to delete post: " + error.message);
       }
-    });
+    }
   </script>
 </head>
 <body>
   <div class="container">
-    <!-- Login Form -->
-    <form id="loginForm" style="display: none;">
-      <h2>Login</h2>
+    <h2>Admin Post System</h2>
+    <form id="postForm" style="display: none;">
       <div class="form-group">
-        <input type="email" id="loginEmail" placeholder="Email" required />
+        <input type="text" id="postTitle" placeholder="Post Title" required />
       </div>
       <div class="form-group">
-        <input type="password" id="loginPassword" placeholder="Password" required />
+        <textarea id="postDescription" placeholder="Post Description" required></textarea>
       </div>
-      <button type="submit">Login</button>
+      <div class="form-group">
+        <input type="file" id="postFile" />
+      </div>
+      <button type="submit">Create Post</button>
     </form>
-
-    <!-- Register Form -->
-    <form id="registerForm" style="display: none;">
-      <h2>Register</h2>
-      <div class="form-group">
-        <input type="email" id="registerEmail" placeholder="Email" required />
-      </div>
-      <div class="form-group">
-        <input type="password" id="registerPassword" placeholder="Password" required />
-      </div>
-      <button type="submit">Register</button>
-    </form>
-
-    <!-- Chat Box -->
-    <div id="chatBox" style="display: none;">
-      <h2>Chat</h2>
-      <div id="chatMessages" class="chat"></div>
-      <input type="text" id="messageInput" placeholder="Type a message..." />
-      <button id="sendMessage">Send</button>
-      <a href="#" id="logoutButton">Logout</a>
-    </div>
+    <div id="postsContainer"></div>
   </div>
 </body>
 </html>
