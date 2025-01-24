@@ -3,24 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Post System</title>
+  <title>Admin Post System with Login</title>
   <style>
-    /* Modern Style */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: #fff;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      height: 100vh;
     }
 
     .container {
-      max-width: 800px;
-      width: 100%;
+      width: 400px;
       background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 10px;
@@ -28,7 +25,7 @@
     }
 
     h2 {
-      margin-bottom: 20px;
+      text-align: center;
       color: #00ffff;
     }
 
@@ -36,7 +33,7 @@
       margin-bottom: 15px;
     }
 
-    input, textarea {
+    input, button {
       width: 100%;
       padding: 10px;
       border: none;
@@ -46,17 +43,26 @@
     }
 
     button {
-      padding: 10px 20px;
       background: #00aaff;
       color: #fff;
-      border: none;
-      border-radius: 5px;
       cursor: pointer;
       transition: 0.3s;
     }
 
     button:hover {
       background: #007acc;
+    }
+
+    .form-toggle {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #00ffff;
+      text-decoration: underline;
+    }
+
+    #postForm, #postsContainer {
+      display: none;
     }
 
     .post {
@@ -70,43 +76,19 @@
       margin: 0;
     }
 
-    .comment-section {
-      margin-top: 10px;
-    }
-
-    .audio-player {
-      background: #333;
-      border-radius: 5px;
-      padding: 10px;
-      margin-top: 10px;
-    }
-
     .user-info {
       font-size: 14px;
       color: #aaa;
       margin-top: 10px;
     }
-
-    .like-btn {
-      background: #444;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-
-    .like-btn:hover {
-      background: #555;
-    }
   </style>
   <script type="module">
     // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
-    // Your Firebase Configuration
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
       authDomain: "nexaverse-eeb07.firebaseapp.com",
@@ -123,23 +105,77 @@
     const db = getFirestore(app);
 
     // DOM Elements
+    const registerForm = document.querySelector("#registerForm");
+    const loginForm = document.querySelector("#loginForm");
     const postForm = document.querySelector("#postForm");
     const postsContainer = document.querySelector("#postsContainer");
+    const logoutButton = document.querySelector("#logoutButton");
+    const formToggle = document.querySelector(".form-toggle");
 
+    let isRegistering = true;
     let currentUser = null;
     let userRole = "";
+
+    // Toggle Between Register and Login Forms
+    formToggle.addEventListener("click", () => {
+      isRegistering = !isRegistering;
+      document.querySelector("#registerForm").style.display = isRegistering ? "block" : "none";
+      document.querySelector("#loginForm").style.display = isRegistering ? "none" : "block";
+    });
+
+    // Registration
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.querySelector("#registerEmail").value;
+      const password = document.querySelector("#registerPassword").value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Add the user to Firestore with a default role
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          role: "user", // Default role
+          name: user.email.split("@")[0],
+        });
+
+        alert("Registration successful! You can now log in.");
+        registerForm.reset();
+      } catch (error) {
+        alert("Registration failed: " + error.message);
+      }
+    });
+
+    // Login
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.querySelector("#loginEmail").value;
+      const password = document.querySelector("#loginPassword").value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        currentUser = userCredential.user;
+        alert("Login successful!");
+        loginForm.reset();
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
 
     // Auth State Change
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
 
-        // Fetch the user's role from Firestore
-        const userDoc = await getDocs(doc(db, "users", user.uid));
-        userRole = userDoc.data().role;
+        // Fetch role from Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          userRole = userDoc.data().role;
 
-        if (userRole === "admin") {
-          document.querySelector("#postForm").style.display = "block";
+          if (userRole === "admin") {
+            postForm.style.display = "block"; // Admin-only form
+          }
         }
         loadPosts();
       } else {
@@ -148,23 +184,25 @@
       }
     });
 
-    // Post Form Submission
+    // Logout
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+      alert("Logged out!");
+      location.reload();
+    });
+
+    // Post Form Submission (Admin-Only)
     postForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = document.querySelector("#postTitle").value;
       const description = document.querySelector("#postDescription").value;
-      const file = document.querySelector("#postFile").files[0];
 
       try {
-        // Save post to Firestore
         await addDoc(collection(db, "posts"), {
           title,
           description,
-          fileType: file ? file.type : null,
           createdBy: currentUser.email,
           role: userRole,
-          likes: 0,
-          createdAt: new Date(),
         });
         alert("Post created!");
         postForm.reset();
@@ -186,46 +224,44 @@
           <h3>${post.title}</h3>
           <p>${post.description}</p>
           <p class="user-info">Posted by ${post.createdBy} (${post.role})</p>
-          <button class="like-btn">Like (${post.likes})</button>
         `;
-        if (userRole === "admin") {
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "Delete Post";
-          deleteBtn.addEventListener("click", () => deletePost(doc.id));
-          postElement.appendChild(deleteBtn);
-        }
         postsContainer.appendChild(postElement);
       });
-    }
-
-    // Delete Post
-    async function deletePost(postId) {
-      try {
-        await deleteDoc(doc(db, "posts", postId));
-        alert("Post deleted!");
-        loadPosts();
-      } catch (error) {
-        alert("Failed to delete post: " + error.message);
-      }
     }
   </script>
 </head>
 <body>
   <div class="container">
     <h2>Admin Post System</h2>
-    <form id="postForm" style="display: none;">
-      <div class="form-group">
-        <input type="text" id="postTitle" placeholder="Post Title" required />
-      </div>
-      <div class="form-group">
-        <textarea id="postDescription" placeholder="Post Description" required></textarea>
-      </div>
-      <div class="form-group">
-        <input type="file" id="postFile" />
-      </div>
+
+    <!-- Registration Form -->
+    <form id="registerForm">
+      <input type="email" id="registerEmail" placeholder="Email" required />
+      <input type="password" id="registerPassword" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+
+    <!-- Login Form -->
+    <form id="loginForm" style="display: none;">
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="form-toggle">Switch to Login</div>
+
+    <!-- Post Form (Admin-Only) -->
+    <form id="postForm">
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <textarea id="postDescription" placeholder="Post Description" required></textarea>
       <button type="submit">Create Post</button>
     </form>
+
+    <!-- Posts -->
     <div id="postsContainer"></div>
+
+    <!-- Logout Button -->
+    <button id="logoutButton" style="margin-top: 20px; display: none;">Logout</button>
   </div>
 </body>
 </html>
