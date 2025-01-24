@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Futuristic Chat</title>
   <style>
-    /* Futuristic, animated UI */
+    /* Modern Futuristic Design */
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: "Arial", sans-serif;
+      background: linear-gradient(135deg, #1a2a3a, #2c5364);
       color: #fff;
       display: flex;
       justify-content: center;
@@ -19,32 +19,39 @@
 
     .container {
       width: 90%;
-      max-width: 800px;
+      max-width: 600px;
       text-align: center;
       padding: 20px;
-      border: 1px solid #fff;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 24px;
     }
 
     .form-group {
-      margin: 15px 0;
+      margin-bottom: 15px;
     }
 
     input {
       width: 100%;
       padding: 10px;
-      margin: 5px 0;
       border: none;
       border-radius: 5px;
       outline: none;
+      margin-bottom: 10px;
+      font-size: 16px;
     }
 
     button {
       padding: 10px 20px;
       background: #00aaff;
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -62,6 +69,7 @@
       border: 1px solid #fff;
       padding: 10px;
       border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .message {
@@ -69,33 +77,36 @@
       margin: 5px 0;
       background: #222;
       border-radius: 5px;
-      text-align: left;
     }
 
-    .moderation {
-      display: none;
+    a {
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
     }
 
-    .moderator {
-      display: inline-block;
+    a:hover {
+      color: #00aaff;
     }
   </style>
   <script type="module">
-    // Import Firebase (you need to set up your project in Firebase Console)
+    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
-    // Firebase configuration
+    // Your Firebase Configuration
     const firebaseConfig = {
-  apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
-  authDomain: "nexaverse-eeb07.firebaseapp.com",
-  databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
-  projectId: "nexaverse-eeb07",
-  storageBucket: "nexaverse-eeb07.firebasestorage.app",
-  messagingSenderId: "686342300627",
-  appId: "1:686342300627:web:90522d8f1129fb00b08526"
-};
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.firebasestorage.app",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526"
+    };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -110,6 +121,31 @@
     const messageInput = document.querySelector("#messageInput");
     const sendMessageButton = document.querySelector("#sendMessage");
 
+    // Redirect Logic
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in
+        showChat();
+      } else {
+        // No user is logged in
+        showLogin();
+      }
+    });
+
+    // Show Login/Register
+    function showLogin() {
+      loginForm.style.display = "block";
+      registerForm.style.display = "block";
+      chatBox.style.display = "none";
+    }
+
+    // Show Chat
+    function showChat() {
+      loginForm.style.display = "none";
+      registerForm.style.display = "none";
+      chatBox.style.display = "block";
+    }
+
     // Login functionality
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -118,8 +154,6 @@
       try {
         await signInWithEmailAndPassword(auth, email, password);
         alert("Logged in successfully!");
-        loginForm.style.display = "none";
-        chatBox.style.display = "block";
       } catch (error) {
         alert("Login failed: " + error.message);
       }
@@ -164,12 +198,23 @@
         chatMessages.appendChild(messageElement);
       });
     });
+
+    // Logout functionality
+    document.querySelector("#logoutButton").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("Logged out successfully!");
+        showLogin();
+      } catch (error) {
+        alert("Logout failed: " + error.message);
+      }
+    });
   </script>
 </head>
 <body>
   <div class="container">
     <!-- Login Form -->
-    <form id="loginForm">
+    <form id="loginForm" style="display: none;">
       <h2>Login</h2>
       <div class="form-group">
         <input type="email" id="loginEmail" placeholder="Email" required />
@@ -181,7 +226,7 @@
     </form>
 
     <!-- Register Form -->
-    <form id="registerForm">
+    <form id="registerForm" style="display: none;">
       <h2>Register</h2>
       <div class="form-group">
         <input type="email" id="registerEmail" placeholder="Email" required />
@@ -198,8 +243,8 @@
       <div id="chatMessages" class="chat"></div>
       <input type="text" id="messageInput" placeholder="Type a message..." />
       <button id="sendMessage">Send</button>
+      <a href="#" id="logoutButton">Logout</a>
     </div>
   </div>
 </body>
-  </html>
-  
+</html>
