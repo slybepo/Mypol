@@ -3,242 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Futuristic Post System</title>
+  <title>Login/Register</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: #0f051d;
-      color: #e4e4e4;
-      overflow-x: hidden;
-    }
-
-    
-
-    @keyframes move-bg {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-100px);
-      }
-    }
-
-    /* Navbar */
-    .navbar {
+      background: linear-gradient(to right, #7a4bff, #bc8cff);
+      color: #fff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-      position: sticky;
-      top: 0;
-      background: rgba(20, 20, 40, 0.9);
-      z-index: 10;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
 
-    .navbar img {
-      height: 50px;
-      cursor: pointer;
-    }
-
-    .navbar img:hover {
-      transform: scale(1.1);
-      transition: 0.3s;
-    }
-
-    .navbar button {
-      background: linear-gradient(135deg, #7a4bff, #bc8cff);
-      border: none;
-      border-radius: 20px;
-      color: white;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .navbar button:hover {
-      filter: brightness(1.2);
-    }
-
-    /* Main Container */
     .container {
-      max-width: 800px;
-      margin: 80px auto;
-      padding: 20px;
-      background: rgba(40, 10, 60, 0.9);
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    h2 {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
       text-align: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #9f77ff;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     }
 
-    /* Forms */
-    form input,
-    form textarea,
-    form button {
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: none;
+    }
+
+    form.active {
+      display: block;
+    }
+
+    input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: none;
       border-radius: 8px;
       font-size: 16px;
-    }
-
-    form input,
-    form textarea {
-      background: #2e1744;
-      color: #fff;
       outline: none;
+      background: #222;
+      color: #fff;
     }
 
-    form button {
-      background: linear-gradient(135deg, #bc8cff, #7a4bff);
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7a4bff, #bc8cff);
       color: white;
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.2s;
     }
 
-    form button:hover {
+    button:hover {
       transform: scale(1.05);
     }
 
-    .form-toggle {
-      text-align: center;
-      font-size: 14px;
+    .toggle-btn {
       margin-top: 10px;
       cursor: pointer;
       color: #9f77ff;
       text-decoration: underline;
     }
-
-    /* Posts Section */
-    .post {
-      background: #1d1332;
-      padding: 20px;
-      margin: 15px 0;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .post h3 {
-      font-size: 20px;
-      color: #9f77ff;
-      margin-bottom: 10px;
-    }
-
-    .post p {
-      margin: 10px 0;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .post .meta {
-      font-size: 12px;
-      color: #aaa;
-    }
-
-    /* File Preview */
-    .file-preview {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px 0;
-      text-align: center;
-    }
-
-    .file-preview audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    /* Like Button */
-    .like-btn {
-      background: none;
-      border: none;
-      color: #9f77ff;
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: color 0.2s;
-    }
-
-    .like-btn:hover {
-      color: #fff;
-    }
-
-    /* Notifications */
-    .notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #7a4bff;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      animation: fadeInOut 3s;
-    }
-
-    @keyframes fadeInOut {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      20% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      80% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="background"></div>
-  <div class="navbar">
-    <img src="logo.png" alt="Logo" id="logo" />
-    <button id="logoutButton" style="display: none;">Logout</button>
-  </div>
   <div class="container">
-    <h2>Welcome to the Futuristic Post System</h2>
-    <!-- Register/Login Form -->
-    <form id="registerForm" style="display: none;">
-      <input type="email" id="registerEmail" placeholder="Email" required />
-      <input type="password" id="registerPassword" placeholder="Password" required />
-      <button type="submit">Register</button>
-    </form>
-    <form id="loginForm">
+    <h1>Welcome Back</h1>
+    <form id="loginForm" class="active">
       <input type="email" id="loginEmail" placeholder="Email" required />
       <input type="password" id="loginPassword" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
-    <div class="form-toggle">Switch to Register</div>
-    
+    <form id="registerForm">
+      <input type="email" id="registerEmail" placeholder="Email" required />
+      <input type="password" id="registerPassword" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+    <div class="toggle-btn">Don't have an account? Register</div>
   </div>
 
-  <script src="/teso.js" type="module"></script>
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginForm = document.querySelector("#loginForm");
+    const registerForm = document.querySelector("#registerForm");
+    const toggleBtn = document.querySelector(".toggle-btn");
+
+    // Switch between forms
+    toggleBtn.addEventListener("click", () => {
+      loginForm.classList.toggle("active");
+      registerForm.classList.toggle("active");
+      toggleBtn.textContent = loginForm.classList.contains("active")
+        ? "Don't have an account? Register"
+        : "Already have an account? Login";
+    });
+
+    // Login
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.querySelector("#loginEmail").value;
+      const password = document.querySelector("#loginPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
+
+    // Register
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.querySelector("#registerEmail").value;
+      const password = document.querySelector("#registerPassword").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Registration successful. Please login.");
+        loginForm.classList.add("active");
+        registerForm.classList.remove("active");
+        toggleBtn.textContent = "Don't have an account? Register";
+      } catch (error) {
+        alert("Registration failed: " + error.message);
+      }
+    });
+  </script>
 </body>
 </html>
