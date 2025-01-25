@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futuristic Post System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f051d;
+      color: #e4e4e4;
+      overflow-x: hidden;
+    }
+
+    
+
+    @keyframes move-bg {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-100px);
+      }
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(20, 20, 40, 0.9);
+      z-index: 10;
+    }
+
+    .navbar img {
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .navbar img:hover {
+      transform: scale(1.1);
+      transition: 0.3s;
+    }
+
+    .navbar button {
+      background: linear-gradient(135deg, #7a4bff, #bc8cff);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .navbar button:hover {
+      filter: brightness(1.2);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 20px;
+      background: rgba(40, 10, 60, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #9f77ff;
+    }
+
+    /* Forms */
+    form input,
+    form textarea,
+    form button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    form input,
+    form textarea {
+      background: #2e1744;
+      color: #fff;
+      outline: none;
+    }
+
+    form button {
+      background: linear-gradient(135deg, #bc8cff, #7a4bff);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    form button:hover {
+      transform: scale(1.05);
+    }
+
+    .form-toggle {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #9f77ff;
+      text-decoration: underline;
+    }
+
+    /* Posts Section */
+    .post {
+      background: #1d1332;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .post h3 {
+      font-size: 20px;
+      color: #9f77ff;
+      margin-bottom: 10px;
+    }
+
+    .post p {
+      margin: 10px 0;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .post .meta {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    /* File Preview */
+    .file-preview {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .file-preview audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    /* Like Button */
+    .like-btn {
+      background: none;
+      border: none;
+      color: #9f77ff;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
+
+    .like-btn:hover {
+      color: #fff;
+    }
+
+    /* Notifications */
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #7a4bff;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      animation: fadeInOut 3s;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+    }
+      </style>
+      <body>
+        <form id="postForm" style="display: none;">
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <textarea id="postDescription" placeholder="Write your post (use **bold**, _italic_, # Header)" required></textarea>
+      <input type="file" id="postFile" accept=".jpg,.png,.mp3,.wav,.mp4" />
+      <button type="submit">Create Post</button>
+    </form>
+    <div id="postsContainer"></div>
+
+        
+      </body>
