@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Nexaverse</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <style>
+    /* General Styling */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(120deg, #1e3a8a, #2563eb, #4f46e5);
+      background-size: 300% 300%;
+      animation: gradientAnimation 6s ease infinite;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    header img {
+      width: 150px;
+      cursor: pointer;
+    }
+
+    header .logout-btn {
+      padding: 10px 20px;
+      background: #e91e63;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    header .logout-btn:hover {
+      background: #c2185b;
+    }
+
+    /* Navigation Menu */
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+
+    .nav-menu.active {
+      left: 0;
+    }
+
+    .nav-menu a {
+      color: #fff;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .nav-menu a:hover {
+      color: #ffc107;
+    }
+
+    .nav-toggle {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* Post Form */
+    .post-form {
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .post-form input, .post-form textarea, .post-form button {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .post-form button {
+      background: #4caf50;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .post-form button:hover {
+      background: #388e3c;
+    }
+
+    /* Posts Section */
+    .posts-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .post {
+      width: 90%;
+      max-width: 600px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .post .post-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .post .post-meta {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .post .post-description {
+      margin: 10px 0;
+    }
+
+    .post .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .post .vote-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .post .vote-buttons button {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .post .vote-buttons button:hover {
+      color: #ffc107;
+    }
+
+    .post .vote-count {
+      font-size: 18px;
+      margin-left: 5px;
+    }
+
+    .post .feature-button {
+      padding: 5px 10px;
+      background: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .post .feature-button:hover {
+      background: #ffb300;
+    }
+
+    /* Featured Posts */
+    .featured-posts {
+      margin: 30px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .featured-posts h2 {
+      color: #ffc107;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <i class="fas fa-bars nav-toggle" onclick="toggleNavMenu()"></i>
+  <div class="nav-menu" id="navMenu">
+    <a href="#home">Home</a>
+    <a href="#featured">Featured Posts</a>
+    <a href="#profile">Profile</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <img src="logo.png" alt="Nexaverse Logo" onclick="navigateToMainPage()" />
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Post Form -->
+    <form class="post-form" id="postForm">
+      <h2>Create a Post</h2>
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <textarea id="postDescription" placeholder="Post Description" required></textarea>
+      <button type="submit">Publish Post</button>
+    </form>
+
+    <!-- Featured Posts -->
+    <section class="featured-posts">
+      <h2>Featured Posts</h2>
+      <div id="featuredPostsContainer"></div>
+    </section>
+
+    <!-- Recent Posts -->
+    <section class="posts-section">
+      <h2>Recent Posts</h2>
+      <div id="postsContainer"></div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    function toggleNavMenu() {
+      document.getElementById("navMenu").classList.toggle("active");
+    }
+
+    async function logout() {
+      await signOut(auth);
+      alert("Logged out successfully!");
+      window.location.href = "index.html";
+    }
+
+    async function loadPosts() {
+      const postsContainer = document.getElementById("postsContainer");
+      const featuredPostsContainer = document.getElementById("featuredPostsContainer");
+      const querySnapshot = await getDocs(collection(db, "posts"));
+
+      postsContainer.innerHTML = "";
+      featuredPostsContainer.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const post = doc.data();
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
+        postElement.innerHTML = `
+          <h3 class="post-title">${post.title}</h3>
+          <p class="post-meta">By ${post.user} on ${new Date(post.timestamp).toLocaleString()}</p>
+          <p class="post-description">${post.description}</p>
+          <div class="post-actions">
+            <div class="vote-buttons">
+              <button onclick="upvote('${doc.id}')">👍</button>
+              <button onclick="downvote('${doc.id}')">👎</button>
+              <span class="vote-count">${post.upvotes || 0}</span>
+            </div>
+            ${
+              post.featured
+                ? `<span class="featured-badge">Featured</span>`
+                : `<button class="feature-button" onclick="featurePost('${doc.id}')">Feature</button>`
+            }
+          </div>
+        `;
+
+        if (post.featured) {
+          featuredPostsContainer.appendChild(postElement);
+        } else {
+          postsContainer.appendChild(postElement);
+        }
+      });
+    }
+
+    async function upvote(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, { upvotes: increment(1) });
+      loadPosts();
+    }
+
+    async function downvote(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, { downvotes: increment(1) });
+      loadPosts();
+    }
+
+    async function featurePost(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, { featured: true });
+      loadPosts();
+    }
+
+    document.getElementById("postForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("postTitle").value;
+      const description = document.getElementById("postDescription").value;
+
+      try {
+        await addDoc(collection(db, "posts"), {
+          title,
+          description,
+          user: auth.currentUser.email,
+          timestamp: new Date().toISOString(),
+          featured: false,
+          upvotes: 0,
+          downvotes: 0,
+        });
+        alert("Post published!");
+        loadPosts();
+      } catch (error) {
+        console.error("Error publishing post:", error);
+        alert("Failed to publish post.");
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loadPosts();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
