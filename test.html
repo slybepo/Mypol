@@ -3,152 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login/Register</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <title>Login / Register</title>
   <style>
+    /* General styling for the login/register page */
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #7a4bff, #bc8cff);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: 'Arial', sans-serif;
       margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1f2937, #3b82f6);
+      color: white;
     }
-
     .container {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 30px;
+      width: 400px;
+      padding: 20px;
       border-radius: 12px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      background: #111827;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
-
     h1 {
-      font-size: 28px;
+      text-align: center;
       margin-bottom: 20px;
     }
-
-    form {
-      display: none;
+    .form-group {
+      margin-bottom: 15px;
     }
-
-    form.active {
-      display: block;
-    }
-
     input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      outline: none;
-      background: #222;
-      color: #fff;
+      background: #1f2937;
+      color: white;
+      font-size: 14px;
     }
-
     button {
       width: 100%;
       padding: 12px;
+      background: #3b82f6;
       border: none;
       border-radius: 8px;
-      background: linear-gradient(135deg, #7a4bff, #bc8cff);
       color: white;
-      font-weight: bold;
+      font-size: 16px;
       cursor: pointer;
-      transition: transform 0.2s;
     }
-
     button:hover {
-      transform: scale(1.05);
+      background: #2563eb;
     }
-
-    .toggle-btn {
+    .switch {
       margin-top: 10px;
-      cursor: pointer;
-      color: #9f77ff;
-      text-decoration: underline;
+      text-align: center;
+    }
+    .switch a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Welcome Back</h1>
-    <form id="loginForm" class="active">
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <form id="registerForm">
-      <input type="email" id="registerEmail" placeholder="Email" required />
-      <input type="password" id="registerPassword" placeholder="Password" required />
-      <button type="submit">Register</button>
-    </form>
-    <div class="toggle-btn">Don't have an account? Register</div>
+    <h1 id="form-title">Login</h1>
+    <div class="form-group">
+      <input type="text" id="username" placeholder="Username" style="display: none;">
+    </div>
+    <div class="form-group">
+      <input type="email" id="email" placeholder="Email">
+    </div>
+    <div class="form-group">
+      <input type="password" id="password" placeholder="Password">
+    </div>
+    <button id="submit-button">Login</button>
+    <p class="error" id="error"></p>
+    <div class="switch">
+      <span id="switch-text">Don't have an account? <a href="#" id="switch-link">Register</a></span>
+    </div>
   </div>
 
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
-    // Firebase Config
     const firebaseConfig = {
-      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
-      authDomain: "nexaverse-eeb07.firebaseapp.com",
-      databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
-      projectId: "nexaverse-eeb07",
-      storageBucket: "nexaverse-eeb07.appspot.com",
-      messagingSenderId: "686342300627",
-      appId: "1:686342300627:web:90522d8f1129fb00b08526"
+      apiKey: "YOUR-API-KEY",
+      authDomain: "YOUR-AUTH-DOMAIN",
+      projectId: "YOUR-PROJECT-ID",
+      storageBucket: "YOUR-STORAGE-BUCKET",
+      messagingSenderId: "YOUR-MESSAGING-SENDER-ID",
+      appId: "YOUR-APP-ID",
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    const loginForm = document.querySelector("#loginForm");
-    const registerForm = document.querySelector("#registerForm");
-    const toggleBtn = document.querySelector(".toggle-btn");
+    const submitButton = document.getElementById("submit-button");
+    const switchLink = document.getElementById("switch-link");
+    const formTitle = document.getElementById("form-title");
+    const usernameField = document.getElementById("username");
+    const errorField = document.getElementById("error");
 
-    // Switch between forms
-    toggleBtn.addEventListener("click", () => {
-      loginForm.classList.toggle("active");
-      registerForm.classList.toggle("active");
-      toggleBtn.textContent = loginForm.classList.contains("active")
-        ? "Don't have an account? Register"
-        : "Already have an account? Login";
+    let isLogin = true;
+
+    switchLink.addEventListener("click", () => {
+      isLogin = !isLogin;
+      formTitle.textContent = isLogin ? "Login" : "Register";
+      usernameField.style.display = isLogin ? "none" : "block";
+      submitButton.textContent = isLogin ? "Login" : "Register";
+      switchLink.textContent = isLogin ? "Register" : "Login";
     });
 
-    // Login
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.querySelector("#loginEmail").value;
-      const password = document.querySelector("#loginPassword").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = "dashboard.html";
-      } catch (error) {
-        alert("Login failed: " + error.message);
-      }
-    });
+    submitButton.addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    // Register
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.querySelector("#registerEmail").value;
-      const password = document.querySelector("#registerPassword").value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Registration successful. Please login.");
-        loginForm.classList.add("active");
-        registerForm.classList.remove("active");
-        toggleBtn.textContent = "Don't have an account? Register";
-      } catch (error) {
-        alert("Registration failed: " + error.message);
+      if (isLogin) {
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.href = "dashboard.html";
+        } catch (error) {
+          errorField.textContent = error.message;
+        }
+      } else {
+        const username = usernameField.value;
+        if (!username) {
+          errorField.textContent = "Username is required";
+          return;
+        }
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          await setDoc(doc(db, "users", user.uid), {
+            username,
+            email,
+            role: "member",
+          });
+
+          window.location.href = "dashboard.html";
+        } catch (error) {
+          errorField.textContent = error.message;
+        }
       }
     });
   </script>
