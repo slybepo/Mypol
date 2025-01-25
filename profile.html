@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .change-pfp {
+      display: inline-block;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .posts-section {
+      margin-top: 20px;
+    }
+
+    .post {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .post img {
+      max-width: 100%;
+      border-radius: 6px;
+    }
+
+    .post textarea {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .new-post {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile-header">
+      <img src="" id="profilePicture" class="profile-picture" alt="Profile Picture">
+      <h2 id="username"></h2>
+      <input type="file" id="changePfp" style="display: none;">
+      <button class="change-pfp" onclick="document.getElementById('changePfp').click()">Change Profile Picture</button>
+    </div>
+
+    <div class="new-post">
+      <h3>Create a Post</h3>
+      <input type="file" id="postImage">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <button onclick="addPost()">Post</button>
+    </div>
+
+    <div class="posts-section" id="postsContainer">
+      <h3>Your Posts</h3>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
+
+        const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const uid = new URLSearchParams(window.location.search).get("uid");
+
+    const profilePicture = document.getElementById("profilePicture");
+    const usernameEl = document.getElementById("username");
+    const postsContainer = document.getElementById("postsContainer");
+
+    async function loadProfile() {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        usernameEl.textContent = userData.username;
+        profilePicture.src = userData.profilePicture || "default-pfp.png";
+
+        userData.posts.forEach(post => {
+          const postEl = document.createElement("div");
+          postEl.classList.add("post");
+          postEl.innerHTML = `
+            <img src="${post.image}" alt="Post Image">
+            <p>${post.text}</p>
+          `;
+          postsContainer.appendChild(postEl);
+        });
+      }
+    }
+
+    async function changeProfilePicture(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileRef = ref(storage, `profilePictures/${uid}`);
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+
+      await updateDoc(doc(db, "users", uid), {
+        profilePicture: downloadURL,
+      });
+
+      profilePicture.src = downloadURL;
+    }
+
+    async function addPost() {
+      const postImageInput = document.getElementById("postImage");
+      const postText = document.getElementById("postText").value;
+
+      if (!postText) return;
+
+      let imageUrl = "";
+      if (postImageInput.files[0]) {
+        const imageRef = ref(storage, `posts/${uid}/${Date.now()}`);
+        await uploadBytes(imageRef, postImageInput.files[0]);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      await updateDoc(doc(db, "users", uid), {
+        posts: arrayUnion({
+          text: postText,
+          image: imageUrl,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      location.reload();
+    }
+
+    document.getElementById("changePfp").addEventListener("change", changeProfilePicture);
+
+    loadProfile();
+  </script>
+</body>
+  </html>
+  
