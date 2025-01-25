@@ -3,277 +3,326 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Post Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <title>Dashboard - Nexaverse</title>
   <style>
+    /* General Styling */
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #1e0132;
-      color: #fff;
       margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .navbar img {
-      width: 50px;
-      cursor: pointer;
-    }
-
-    .navbar button {
-      padding: 10px 20px;
-      background: #9c27b0;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .navbar button:hover {
-      transform: scale(1.05);
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1f0036, #3e005c);
+      color: #fff;
     }
 
     .container {
-      width: 90%;
       max-width: 1200px;
-      margin: 20px auto;
-    }
-
-    .post-form {
-      background: rgba(255, 255, 255, 0.05);
+      margin: auto;
       padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: none;
     }
 
-    .post-form input, .post-form textarea, .post-form button {
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    header img {
+      width: 150px;
+      cursor: pointer;
+    }
+
+    header .logout-btn {
+      padding: 10px 20px;
+      background: #e91e63;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    header .logout-btn:hover {
+      background: #c2185b;
+    }
+
+    /* Post Form */
+    .post-form {
+      margin: 20px 0;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+    }
+
+    .post-form input,
+    .post-form textarea,
+    .post-form button {
       width: 100%;
       margin-bottom: 10px;
       padding: 10px;
-      border-radius: 8px;
       border: none;
+      border-radius: 5px;
       font-size: 16px;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.1);
     }
 
     .post-form button {
-      background: #6a1b9a;
-      font-weight: bold;
-      transition: transform 0.2s;
+      background: #673ab7;
+      color: #fff;
+      cursor: pointer;
     }
 
     .post-form button:hover {
-      transform: scale(1.05);
+      background: #512da8;
     }
 
-    .posts {
+    /* Posts Section */
+    .posts-section {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
     .post {
-      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.9);
       border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      position: relative;
     }
 
-    .post h3 {
-      margin: 0 0 10px;
-      color: #ff80ab;
+    .post .post-title {
+      font-size: 20px;
+      font-weight: bold;
     }
 
-    .post .content {
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .post .meta {
-      margin-top: 10px;
+    .post .post-meta {
       font-size: 14px;
-      color: #ccc;
+      color: #aaa;
     }
 
-    .post .file-preview {
-      margin-top: 10px;
+    .post .post-description {
+      margin: 10px 0;
     }
 
-    .post .like-section {
-      margin-top: 10px;
+    .post .post-actions {
       display: flex;
-      align-items: center;
+      justify-content: space-between;
+    }
+
+    .post .vote-buttons {
+      display: flex;
       gap: 10px;
     }
 
-    .post .like-section button {
-      background: #ff4081;
-      color: white;
+    .post .vote-buttons button {
+      padding: 5px 10px;
       border: none;
-      padding: 5px 15px;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    .notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #6200ea;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
+    .post .vote-buttons .upvote {
+      background: #4caf50;
+      color: #fff;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .post .vote-buttons .downvote {
+      background: #f44336;
+      color: #fff;
     }
 
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      to {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+    .post .vote-buttons .upvote:hover,
+    .post .vote-buttons .downvote:hover {
+      opacity: 0.8;
+    }
+
+    .post .feature-button {
+      padding: 5px 10px;
+      background: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .post .feature-button:hover {
+      background: #ffb300;
+    }
+
+    /* Featured Posts */
+    .featured-posts {
+      margin: 30px 0;
+    }
+
+    .featured-posts h2 {
+      color: #ffc107;
     }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <img src="logo.png" alt="Logo" onclick="window.location.href='dashboard.html'">
-    <button id="logoutButton">Logout</button>
-  </div>
+  <header>
+    <img src="logo.png" alt="Nexaverse Logo" onclick="navigateToMainPage()" />
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
 
   <div class="container">
-    <div class="post-form" id="postForm">
+    <form class="post-form" id="postForm">
       <h2>Create a Post</h2>
-      <input type="text" id="postTitle" placeholder="Post Title">
-      <textarea id="postDescription" placeholder="Post Description"></textarea>
-      <input type="file" id="postFile">
-      <button type="submit" id="createPostButton">Create Post</button>
-    </div>
-    <div class="posts" id="postsContainer"></div>
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <textarea id="postDescription" placeholder="Post Description (Markdown supported)" required></textarea>
+      <input type="file" id="postFile" />
+      <button type="submit">Publish Post</button>
+    </form>
+
+    <section class="featured-posts">
+      <h2>Featured Posts</h2>
+      <div id="featuredPostsContainer"></div>
+    </section>
+
+    <section class="posts-section">
+      <h2>Recent Posts</h2>
+      <div id="postsContainer"></div>
+    </section>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      updateDoc,
+      doc,
+    } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
       authDomain: "nexaverse-eeb07.firebaseapp.com",
-      databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
       projectId: "nexaverse-eeb07",
       storageBucket: "nexaverse-eeb07.appspot.com",
       messagingSenderId: "686342300627",
-      appId: "1:686342300627:web:90522d8f1129fb00b08526"
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
     };
+
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+    const auth = getAuth(app);
 
-    const logoutButton = document.querySelector("#logoutButton");
-    const postForm = document.querySelector("#postForm");
-    const postsContainer = document.querySelector("#postsContainer");
+    // Utility: Navigate to main page
+    function navigateToMainPage() {
+      window.location.href = "index.html";
+    }
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        postForm.style.display = "block";
-        loadPosts();
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    logoutButton.addEventListener("click", async () => {
+    // Logout
+    async function logout() {
       await signOut(auth);
-      window.location.href = "login.html";
-    });
+      alert("Logged out successfully!");
+      window.location.href = "index.html";
+    }
 
+    // Fetch posts and display them
     async function loadPosts() {
+      const postsContainer = document.getElementById("postsContainer");
+      const featuredPostsContainer = document.getElementById(
+        "featuredPostsContainer"
+      );
+      const querySnapshot = await getDocs(collection(db, "posts"));
+
       postsContainer.innerHTML = "";
-      const postsSnapshot = await getDocs(collection(db, "posts"));
-      postsSnapshot.forEach((doc) => {
+      featuredPostsContainer.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
         const post = doc.data();
-        const postDiv = document.createElement("div");
-        postDiv.classList.add("post");
-        postDiv.innerHTML = `
-          <h3>${post.title}</h3>
-          <div class="content">${parseRichText(post.description)}</div>
-          ${
-            post.fileURL
-              ? `<div class="file-preview">
-                  ${
-                    post.fileURL.endsWith(".mp3")
-                      ? `<audio controls src="${post.fileURL}"></audio>`
-                      : `<a href="${post.fileURL}" target="_blank">Download File</a>`
-                  }
-                </div>`
-              : ""
-          }
-          <div class="meta">Posted by ${post.user} on ${new Date(
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
+
+        // Render the post with upvote, downvote, and feature buttons
+        postElement.innerHTML = `
+          <h3 class="post-title">${post.title}</h3>
+          <p class="post-meta">By ${post.user} on ${new Date(
           post.timestamp
-        ).toLocaleString()}</div>
-          <div class="like-section">
-            <button onclick="likePost('${doc.id}')">Like</button>
+        ).toLocaleString()}</p>
+          <p class="post-description">${post.description}</p>
+          <div class="post-actions">
+            <div class="vote-buttons">
+              <button class="upvote" onclick="upvote('${doc.id}')">Upvote</button>
+              <button class="downvote" onclick="downvote('${doc.id}')">Downvote</button>
+            </div>
+            ${
+              post.featured
+                ? `<span class="featured-badge">Featured</span>`
+                : `<button class="feature-button" onclick="featurePost('${doc.id}')">Feature</button>`
+            }
           </div>
         `;
-        postsContainer.appendChild(postDiv);
+
+        if (post.featured) {
+          featuredPostsContainer.appendChild(postElement);
+        } else {
+          postsContainer.appendChild(postElement);
+        }
       });
     }
 
-    async function likePost(postId) {
+    // Add post
+    document.getElementById("postForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById("postTitle").value;
+      const description = document.getElementById("postDescription").value;
+
+      try {
+        await addDoc(collection(db, "posts"), {
+          title,
+          description,
+          user: auth.currentUser.email,
+          timestamp: new Date().toISOString(),
+          featured: false,
+        });
+
+        alert("Post published!");
+        loadPosts();
+      } catch (error) {
+        console.error("Error publishing post:", error);
+        alert("Failed to publish post.");
+      }
+    });
+
+    // Upvote a post
+    async function upvote(postId) {
       const postRef = doc(db, "posts", postId);
-      await updateDoc(postRef, { likes: (post.likes || 0) + 1 });
-      showNotification("Liked the post!");
+      await updateDoc(postRef, {
+        upvotes: increment(1),
+      });
       loadPosts();
     }
 
-    function parseRichText(input) {
-      return input
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-        .replace(/_(.*?)_/g, "<i>$1</i>")
-        .replace(/# (.*?)\n/g, "<h3>$1</h3>");
+    // Downvote a post
+    async function downvote(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, {
+        downvotes: increment(1),
+      });
+      loadPosts();
     }
 
-    function showNotification(message) {
-      const notification = document.createElement("div");
-      notification.classList.add("notification");
-      notification.textContent = message;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+    // Feature a post
+    async function featurePost(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, {
+        featured: true,
+      });
+      loadPosts();
     }
+
+    // Load posts on page load
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loadPosts();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
   </script>
 </body>
 </html>
