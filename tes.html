@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Nexaverse</title>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    rel="stylesheet"
+  />
   <style>
     /* General Styling */
     body {
@@ -13,12 +17,45 @@
       color: #fff;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
+    /* Navigation Menu */
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
       padding: 20px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
     }
 
+    .nav-menu.active {
+      display: flex;
+    }
+
+    .nav-menu a {
+      color: #fff;
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .nav-menu a:hover {
+      color: #ffc107;
+    }
+
+    .nav-toggle {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -105,33 +142,27 @@
     .post .post-actions {
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     .post .vote-buttons {
       display: flex;
+      align-items: center;
       gap: 10px;
     }
 
-    .post .vote-buttons button {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
+    .post .vote-buttons i {
+      font-size: 20px;
       cursor: pointer;
     }
 
-    .post .vote-buttons .upvote {
-      background: #4caf50;
-      color: #fff;
+    .post .vote-buttons i:hover {
+      color: #ffc107;
     }
 
-    .post .vote-buttons .downvote {
-      background: #f44336;
-      color: #fff;
-    }
-
-    .post .vote-buttons .upvote:hover,
-    .post .vote-buttons .downvote:hover {
-      opacity: 0.8;
+    .post .vote-count {
+      font-size: 18px;
+      margin-left: 5px;
     }
 
     .post .feature-button {
@@ -158,11 +189,22 @@
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <div class="nav-menu" id="navMenu">
+    <a href="#home">Home</a>
+    <a href="#featured">Featured Posts</a>
+    <a href="#profile">Profile</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+  <i class="fas fa-bars nav-toggle" onclick="toggleNavMenu()"></i>
+
+  <!-- Header -->
   <header>
     <img src="logo.png" alt="Nexaverse Logo" onclick="navigateToMainPage()" />
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
+  <!-- Main Content -->
   <div class="container">
     <form class="post-form" id="postForm">
       <h2>Create a Post</h2>
@@ -185,14 +227,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      updateDoc,
-      doc,
-    } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -202,13 +237,15 @@
       storageBucket: "nexaverse-eeb07.appspot.com",
       messagingSenderId: "686342300627",
       appId: "1:686342300627:web:90522d8f1129fb00b08526",
-    };
-
+    }; // Your config
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Utility: Navigate to main page
+    function toggleNavMenu() {
+      document.getElementById("navMenu").classList.toggle("active");
+    }
+// Utility: Navigate to main page
     function navigateToMainPage() {
       window.location.href = "index.html";
     }
@@ -323,6 +360,7 @@
         window.location.href = "index.html";
       }
     });
+    // Rest of the JS (load posts, upvote/downvote, etc.)
   </script>
 </body>
 </html>
