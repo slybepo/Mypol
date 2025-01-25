@@ -93,12 +93,12 @@
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "YOUR-API-KEY",
-      authDomain: "YOUR-AUTH-DOMAIN",
-      projectId: "YOUR-PROJECT-ID",
-      storageBucket: "YOUR-STORAGE-BUCKET",
-      messagingSenderId: "YOUR-MESSAGING-SENDER-ID",
-      appId: "YOUR-APP-ID",
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -148,7 +148,7 @@
             role: "member",
           });
 
-          window.location.href = "dashboard.html";
+          window.location.href = "/main";
         } catch (error) {
           errorField.textContent = error.message;
         }
