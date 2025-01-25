@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #2c2f33;
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .header {
+      background: #23272a;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    .messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #40444b;
+    }
+    .message {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      background: #5865f2;
+    }
+    .input-section {
+      display: flex;
+      padding: 10px;
+      background: #23272a;
+    }
+    .input-section input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .input-section button {
+      padding: 10px;
+      background: #5865f2;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Global Chat</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="input-section">
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
