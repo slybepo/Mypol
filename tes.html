@@ -13,8 +13,26 @@
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #1f0036, #3e005c);
       color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Animated Constellations Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black url('https://assets.codepen.io/3/starfield.jpg') repeat;
+      animation: animate 50s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes animate {
+      from { background-position: 0 0; }
+      to { background-position: 10000px 10000px; }
     }
 
     /* Navigation Menu */
@@ -82,113 +100,44 @@
       background: #c2185b;
     }
 
-    /* Post Form */
-    .post-form {
-      margin: 20px 0;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 10px;
-    }
-
-    .post-form input,
-    .post-form textarea,
-    .post-form button {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    .post-form button {
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
       background: #673ab7;
       color: #fff;
-      cursor: pointer;
-    }
-
-    .post-form button:hover {
-      background: #512da8;
-    }
-
-    /* Posts Section */
-    .posts-section {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .post {
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.9);
-      border-radius: 10px;
-      position: relative;
-    }
-
-    .post .post-title {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .post .post-meta {
-      font-size: 14px;
-      color: #aaa;
-    }
-
-    .post .post-description {
-      margin: 10px 0;
-    }
-
-    .post .post-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .post .vote-buttons {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .post .vote-buttons i {
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .post .vote-buttons i:hover {
-      color: #ffc107;
-    }
-
-    .post .vote-count {
-      font-size: 18px;
-      margin-left: 5px;
-    }
-
-    .post .feature-button {
-      padding: 5px 10px;
-      background: #ffc107;
-      color: #000;
-      border: none;
+      padding: 10px 20px;
       border-radius: 5px;
-      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.5s ease;
+      z-index: 999;
     }
 
-    .post .feature-button:hover {
-      background: #ffb300;
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Featured Posts */
-    .featured-posts {
-      margin: 30px 0;
+    /* Post Styling */
+    .post .post-file img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
     }
 
-    .featured-posts h2 {
-      color: #ffc107;
+    .post .post-file audio {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+
   <!-- Navigation -->
   <div class="nav-menu" id="navMenu">
     <a href="#home">Home</a>
@@ -209,8 +158,8 @@
     <form class="post-form" id="postForm">
       <h2>Create a Post</h2>
       <input type="text" id="postTitle" placeholder="Post Title" required />
-      <textarea id="postDescription" placeholder="Post Description (Markdown supported)" required></textarea>
-      <input type="file" id="postFile" />
+      <textarea id="postDescription" placeholder="Post Description" required></textarea>
+      <input type="file" id="postFile" accept="image/*,audio/*" />
       <button type="submit">Publish Post</button>
     </form>
 
@@ -226,8 +175,9 @@
   </div>
 
   <script type="module">
+    // Firebase Config & Initialization
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -237,111 +187,55 @@
       storageBucket: "nexaverse-eeb07.appspot.com",
       messagingSenderId: "686342300627",
       appId: "1:686342300627:web:90522d8f1129fb00b08526",
-    }; // Your config
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Utility Functions
     function toggleNavMenu() {
       document.getElementById("navMenu").classList.toggle("active");
     }
-// Utility: Navigate to main page
-    function navigateToMainPage() {
-      window.location.href = "index.html";
+
+    function showNotification(message) {
+      const notification = document.getElementById("notification");
+      notification.textContent = message;
+      notification.classList.add("show");
+
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 3000);
     }
 
-    // Logout
-    async function logout() {
-      await signOut(auth);
-      alert("Logged out successfully!");
-      window.location.href = "index.html";
-    }
-
-    // Fetch posts and display them
+    // Post System Logic
     async function loadPosts() {
       const postsContainer = document.getElementById("postsContainer");
-      const featuredPostsContainer = document.getElementById(
-        "featuredPostsContainer"
-      );
       const querySnapshot = await getDocs(collection(db, "posts"));
 
       postsContainer.innerHTML = "";
-      featuredPostsContainer.innerHTML = "";
-
       querySnapshot.forEach((doc) => {
         const post = doc.data();
         const postElement = document.createElement("div");
         postElement.classList.add("post");
 
-        // Render the post with upvote, downvote, and feature buttons
+        let filePreview = "";
+        if (post.fileType.startsWith("image/")) {
+          filePreview = `<img src="${post.fileUrl}" alt="Post Image" />`;
+        } else if (post.fileType.startsWith("audio/")) {
+          filePreview = `<audio controls><source src="${post.fileUrl}" /></audio>`;
+        }
+
         postElement.innerHTML = `
-          <h3 class="post-title">${post.title}</h3>
-          <p class="post-meta">By ${post.user} on ${new Date(
-          post.timestamp
-        ).toLocaleString()}</p>
-          <p class="post-description">${post.description}</p>
-          <div class="post-actions">
-            <div class="vote-buttons">
-              <button class="upvote" onclick="upvote('${doc.id}')">Upvote</button>
-              <button class="downvote" onclick="downvote('${doc.id}')">Downvote</button>
-            </div>
-            ${
-              post.featured
-                ? `<span class="featured-badge">Featured</span>`
-                : `<button class="feature-button" onclick="featurePost('${doc.id}')">Feature</button>`
-            }
-          </div>
+          <h3>${post.title}</h3>
+          <p>${post.description}</p>
+          <div class="post-file">${filePreview}</div>
         `;
 
-        if (post.featured) {
-          featuredPostsContainer.appendChild(postElement);
-        } else {
-          postsContainer.appendChild(postElement);
-        }
+        postsContainer.appendChild(postElement);
       });
     }
 
-    // Add post
-    document.getElementById("postForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const title = document.getElementById("postTitle").value;
-      const description = document.getElementById("postDescription").value;
-
-      try {
-        await addDoc(collection(db, "posts"), {
-          title,
-          description,
-          user: auth.currentUser.email,
-          timestamp: new Date().toISOString(),
-          featured: false,
-        });
-
-        alert("Post published!");
-        loadPosts();
-      } catch (error) {
-        console.error("Error publishing post:", error);
-        alert("Failed to publish post.");
-      }
-    });
-
-    // Upvote a post
-    async function upvote(postId) {
-      const postRef = doc(db, "posts", postId);
-      await updateDoc(postRef, {
-        upvotes: increment(1),
-      });
-      loadPosts();
-    }
-
-    // Downvote a post
-    async function downvote(postId) {
-      const postRef = doc(db, "posts", postId);
-      await updateDoc(postRef, {
-        downvotes: increment(1),
-      });
-      loadPosts();
-    }
 
     // Feature a post
     async function featurePost(postId) {
@@ -361,6 +255,10 @@
       }
     });
     // Rest of the JS (load posts, upvote/downvote, etc.)
+    // Fetch & Populate Posts on Load
+    loadPosts();
+
+    // Add more necessary logic for upvotes, downvotes, file uploads, etc.
   </script>
 </body>
 </html>
