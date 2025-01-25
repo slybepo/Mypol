@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Post System</title>
+  <title>Futuristic Post System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* Global Styles */
     * {
@@ -13,69 +14,93 @@
     }
 
     body {
-      font-family: 'Poppins', Arial, sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: #0f051d;
+      color: #e4e4e4;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.imgur.com/zKgN9D5.png') no-repeat center;
+      background-size: cover;
+      animation: move-bg 20s linear infinite;
+    }
+
+    @keyframes move-bg {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-100px);
+      }
     }
 
     /* Navbar */
     .navbar {
-      background: #1e3c72;
-      padding: 10px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      justify-content: space-between;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(20, 20, 40, 0.9);
+      z-index: 10;
     }
 
-    .navbar h1 {
-      font-size: 24px;
-      color: #00ffff;
-      font-weight: 600;
+    .navbar img {
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .navbar img:hover {
+      transform: scale(1.1);
+      transition: 0.3s;
     }
 
     .navbar button {
-      background: #00aaff;
-      color: #fff;
+      background: linear-gradient(135deg, #7a4bff, #bc8cff);
       border: none;
-      border-radius: 5px;
-      padding: 8px 16px;
-      font-size: 14px;
+      border-radius: 20px;
+      color: white;
+      padding: 10px 20px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
     }
 
     .navbar button:hover {
-      background: #007acc;
+      filter: brightness(1.2);
     }
 
     /* Main Container */
     .container {
-      flex-grow: 1;
       max-width: 800px;
-      margin: 20px auto;
+      margin: 80px auto;
       padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+      background: rgba(40, 10, 60, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
     }
 
     h2 {
       text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-      color: #00ffff;
+      font-size: 28px;
+      font-weight: 700;
       margin-bottom: 20px;
+      color: #9f77ff;
     }
 
-    form {
-      margin-bottom: 20px;
-    }
-
-    form input, form textarea, form button {
+    /* Forms */
+    form input,
+    form textarea,
+    form button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -84,214 +109,316 @@
       font-size: 16px;
     }
 
-    form input, form textarea {
-      background: #fff;
-      color: #000;
+    form input,
+    form textarea {
+      background: #2e1744;
+      color: #fff;
+      outline: none;
     }
 
     form button {
-      background: #00aaff;
-      color: #fff;
-      font-weight: 600;
+      background: linear-gradient(135deg, #bc8cff, #7a4bff);
+      color: white;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: transform 0.2s;
     }
 
     form button:hover {
-      background: #007acc;
+      transform: scale(1.05);
     }
 
     .form-toggle {
       text-align: center;
-      margin-top: 10px;
       font-size: 14px;
-      color: #00ffff;
+      margin-top: 10px;
       cursor: pointer;
+      color: #9f77ff;
       text-decoration: underline;
     }
 
     /* Posts Section */
     .post {
-      background: #222;
+      background: #1d1332;
       padding: 20px;
-      border-radius: 10px;
-      margin: 10px 0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     }
 
     .post h3 {
+      font-size: 20px;
+      color: #9f77ff;
       margin-bottom: 10px;
     }
 
-    .user-info {
-      font-size: 14px;
+    .post p {
+      margin: 10px 0;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .post .meta {
+      font-size: 12px;
       color: #aaa;
+    }
+
+    /* File Preview */
+    .file-preview {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .file-preview audio {
+      width: 100%;
       margin-top: 10px;
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
+    /* Like Button */
+    .like-btn {
+      background: none;
+      border: none;
+      color: #9f77ff;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
 
-      .navbar h1 {
-        font-size: 20px;
-      }
+    .like-btn:hover {
+      color: #fff;
+    }
 
-      .navbar button {
-        padding: 8px 12px;
+    /* Notifications */
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #7a4bff;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      animation: fadeInOut 3s;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(30px);
       }
     }
   </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="navbar">
+    <img src="logo.png" alt="Logo" id="logo" />
+    <button id="logoutButton" style="display: none;">Logout</button>
+  </div>
+  <div class="container">
+    <h2>Welcome to the Futuristic Post System</h2>
+    <!-- Register/Login Form -->
+    <form id="registerForm" style="display: none;">
+      <input type="email" id="registerEmail" placeholder="Email" required />
+      <input type="password" id="registerPassword" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <div class="form-toggle">Switch to Register</div>
+    <form id="postForm" style="display: none;">
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <textarea id="postDescription" placeholder="Write your post (use **bold**, _italic_, # Header)" required></textarea>
+      <input type="file" id="postFile" accept=".jpg,.png,.mp3,.wav,.mp4" />
+      <button type="submit">Create Post</button>
+    </form>
+    <div id="postsContainer"></div>
+  </div>
+
   <script type="module">
-    // Firebase Import
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
-
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
-      authDomain: "nexaverse-eeb07.firebaseapp.com",
-      databaseURL: "https://nexaverse-eeb07-default-rtdb.firebaseio.com",
-      projectId: "nexaverse-eeb07",
-      storageBucket: "nexaverse-eeb07.appspot.com",
-      messagingSenderId: "686342300627",
-      appId: "1:686342300627:web:90522d8f1129fb00b08526"
-    };
+    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
     // Initialize Firebase
+    const firebaseConfig = { /* YOUR FIREBASE CONFIG */ };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // DOM Elements
     const registerForm = document.querySelector("#registerForm");
     const loginForm = document.querySelector("#loginForm");
     const postForm = document.querySelector("#postForm");
     const postsContainer = document.querySelector("#postsContainer");
-    const logoutButton = document.querySelector("#logoutButton");
     const formToggle = document.querySelector(".form-toggle");
+    const logoutButton = document.querySelector("#logoutButton");
 
-    let isRegistering = true;
     let currentUser = null;
 
-    // Toggle Forms
+    // Toggle between login and register
     formToggle.addEventListener("click", () => {
-      isRegistering = !isRegistering;
-      registerForm.style.display = isRegistering ? "block" : "none";
-      loginForm.style.display = isRegistering ? "none" : "block";
-      formToggle.textContent = isRegistering ? "Switch to Login" : "Switch to Register";
+      if (registerForm.style.display === "none") {
+        registerForm.style.display = "block";
+        loginForm.style.display = "none";
+        formToggle.textContent = "Switch to Login";
+      } else {
+        registerForm.style.display = "none";
+        loginForm.style.display = "block";
+        formToggle.textContent = "Switch to Register";
+      }
     });
 
-    // Register User
+    // Register user
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.querySelector("#registerEmail").value;
       const password = document.querySelector("#registerPassword").value;
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCredential.user.uid), { email, role: "user" });
-        alert("Registration Successful!");
-        registerForm.reset();
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email,
+          role: "user",
+        });
+        showNotification("Registered successfully! You can now log in.");
       } catch (error) {
-        alert("Error: " + error.message);
+        showNotification("Registration failed: " + error.message);
       }
     });
 
-    // Login User
+    // Login user
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.querySelector("#loginEmail").value;
       const password = document.querySelector("#loginPassword").value;
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Login Successful!");
-        loginForm.reset();
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        currentUser = userCredential.user;
+        handleAuthState();
+        showNotification("Logged in successfully!");
       } catch (error) {
-        alert("Error: " + error.message);
+        showNotification("Login failed: " + error.message);
       }
     });
 
-    // Auth State Listener
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUser = user;
-        logoutButton.style.display = "block";
-        postForm.style.display = "block";
-        loadPosts();
-      } else {
-        currentUser = null;
-        logoutButton.style.display = "none";
-        postForm.style.display = "none";
-        postsContainer.innerHTML = "<p>Please log in to view posts.</p>";
-      }
-    });
-
-    // Logout User
+    // Logout
     logoutButton.addEventListener("click", async () => {
       await signOut(auth);
-      alert("Logged Out!");
+      currentUser = null;
       location.reload();
     });
 
-    // Submit Post
+    // Auth state change
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      handleAuthState();
+    });
+
+    async function handleAuthState() {
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        const userData = userDoc.data();
+        if (userData.role === "admin") {
+          postForm.style.display = "block";
+        } else {
+          postForm.style.display = "none";
+        }
+        logoutButton.style.display = "block";
+        loginForm.style.display = "none";
+        registerForm.style.display = "none";
+        formToggle.style.display = "none";
+        loadPosts();
+      } else {
+        postForm.style.display = "none";
+        logoutButton.style.display = "none";
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        formToggle.style.display = "block";
+        postsContainer.innerHTML = "";
+      }
+    }
+
+    // Create post
     postForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = document.querySelector("#postTitle").value;
       const description = document.querySelector("#postDescription").value;
-      await addDoc(collection(db, "posts"), { title, description, createdBy: currentUser.email });
-      alert("Post Created!");
-      postForm.reset();
+      const file = document.querySelector("#postFile").files[0];
+      const timestamp = new Date().toISOString();
+      let fileURL = "";
+
+      if (file) {
+        const storageRef = ref(storage, `files/${file.name}`);
+        const uploadTask = await uploadBytes(storageRef, file);
+        fileURL = await getDownloadURL(uploadTask.ref);
+      }
+
+      await addDoc(collection(db, "posts"), {
+        title,
+        description,
+        fileURL,
+        user: currentUser.email,
+        timestamp,
+      });
+
+      showNotification("Post created successfully!");
       loadPosts();
     });
 
-    // Load Posts
+    // Load posts
     async function loadPosts() {
-      const querySnapshot = await getDocs(collection(db, "posts"));
       postsContainer.innerHTML = "";
-      querySnapshot.forEach((doc) => {
+      const postsSnapshot = await getDocs(collection(db, "posts"));
+      postsSnapshot.forEach((doc) => {
         const post = doc.data();
-        postsContainer.innerHTML += `
-          <div class="post">
-            <h3>${post.title}</h3>
-            <p>${post.description}</p>
-            <p class="user-info">Posted by: ${post.createdBy}</p>
-          </div>
+        const postDiv = document.createElement("div");
+        postDiv.classList.add("post");
+        postDiv.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${parseRichText(post.description)}</p>
+          ${post.fileURL ? `<div class="file-preview"><audio controls src="${post.fileURL}"></audio></div>` : ""}
+          <div class="meta">Posted by ${post.user} on ${new Date(post.timestamp).toLocaleString()}</div>
         `;
+        postsContainer.appendChild(postDiv);
       });
     }
+
+    // Show notifications
+    function showNotification(message) {
+      const notification = document.createElement("div");
+      notification.classList.add("notification");
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Parse rich text
+    function parseRichText(input) {
+      return input
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+        .replace(/_(.*?)_/g, "<i>$1</i>")
+        .replace(/# (.*?)\n/g, "<h3>$1</h3>");
+    }
   </script>
-</head>
-<body>
-  <div class="navbar">
-    <h1>Admin Post System</h1>
-    <button id="logoutButton" style="display: none;">Logout</button>
-  </div>
-  <div class="container">
-    <h2>Welcome</h2>
-    <!-- Register Form -->
-    <form id="registerForm">
-      <input type="email" id="registerEmail" placeholder="Email" required />
-      <input type="password" id="registerPassword" placeholder="Password" required />
-      <button type="submit">Register</button>
-    </form>
-    <!-- Login Form -->
-    <form id="loginForm" style="display: none;">
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <div class="form-toggle">Switch to Login</div>
-    <!-- Post Form -->
-    <form id="postForm" style="display: none;">
-      <input type="text" id="postTitle" placeholder="Post Title" required />
-      <textarea id="postDescription" placeholder="Post Description" required></textarea>
-      <button type="submit">Create Post</button>
-    </form>
-    <!-- Posts Container -->
-    <div id="postsContainer"></div>
-  </div>
 </body>
 </html>
