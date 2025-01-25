@@ -3,102 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login / Register</title>
+  <title>Dashboard</title>
   <style>
-    * {
+    body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1f2937, #3b82f6);
+      color: white;
     }
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #5865f2, #2c2f33);
-      height: 100vh;
+
+    .header {
+      background-color: #111827;
+      padding: 15px 20px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
-    .container {
-      width: 400px;
-      background: #23272a;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
+
+    .credits {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #40444b;
-      color: white;
-      font-size: 14px;
-    }
-    input:focus {
-      outline: 2px solid #5865f2;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #5865f2;
-      border: none;
-      border-radius: 8px;
-      color: white;
+
+    .credits span {
       font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #4752c4;
-    }
-    .switch {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 14px;
-    }
-    .switch a {
-      color: #5865f2;
-      text-decoration: none;
       font-weight: bold;
     }
-    .switch a:hover {
-      text-decoration: underline;
+
+    .container {
+      padding: 20px;
     }
-    #error {
-      color: red;
-      text-align: center;
-      margin-top: 10px;
+
+    .product-form {
+      background-color: #1f2937;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .product-form input, 
+    .product-form textarea, 
+    .product-form select, 
+    .product-form button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #374151;
+      color: white;
+      font-size: 14px;
+    }
+
+    .product-form button {
+      background: #3b82f6;
+      cursor: pointer;
+    }
+
+    .product-form button:hover {
+      background: #2563eb;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      background-color: #1f2937;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .product h3 {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .product p {
+      font-size: 14px;
+      color: #d1d5db;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="form-title">Register</h1>
-    <div id="form">
-      <div class="form-group" id="username-group">
-        <input type="text" id="username" placeholder="Username">
-      </div>
-      <div class="form-group">
-        <input type="email" id="email" placeholder="Email">
-      </div>
-      <div class="form-group">
-        <input type="password" id="password" placeholder="Password">
-      </div>
-      <button id="submit-button" onclick="register()">Register</button>
-    </div>
-    <p id="error"></p>
-    <div class="switch">
-      <span id="switch-text">Already have an account? <a href="#" onclick="switchToLogin()">Login</a></span>
+  <div class="header">
+    <h1>Dashboard</h1>
+    <div class="credits">
+      <img src="credit-icon.png" alt="Credits Icon" width="20">
+      <span id="credits">0 Credits</span>
     </div>
   </div>
 
-  <script type="module" src="/script.js"></script>
+  <div class="container">
+    <!-- Admin Product Form -->
+    <div class="product-form" id="admin-section" style="display: none;">
+      <h2>Add a Product</h2>
+      <input type="text" id="title" placeholder="Product Title" />
+      <input type="text" id="image" placeholder="Product Image URL" />
+      <textarea id="description" rows="3" placeholder="Product Description"></textarea>
+      <input type="text" id="cost" placeholder="Product Cost (in USD)" />
+      <input type="text" id="stripeLink" placeholder="Stripe Payment Link" />
+      <select id="category">
+        <option value="featured">Featured</option>
+        <option value="new">New</option>
+        <option value="for-you">For You</option>
+      </select>
+      <button id="add-product">Post Product</button>
+    </div>
+
+    <!-- Product List -->
+    <div class="product-list" id="product-list"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
+      authDomain: "nexaverse-eeb07.firebaseapp.com",
+      projectId: "nexaverse-eeb07",
+      storageBucket: "nexaverse-eeb07.appspot.com",
+      messagingSenderId: "686342300627",
+      appId: "1:686342300627:web:90522d8f1129fb00b08526",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const adminSection = document.getElementById("admin-section");
+    const creditsDisplay = document.getElementById("credits");
+    const productList = document.getElementById("product-list");
+
+    // Check user role and load credits
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          creditsDisplay.textContent = `${userData.credits || 0} Credits`;
+
+          if (userData.role === "admin") {
+            adminSection.style.display = "block";
+          }
+
+          loadProducts();
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Add a product
+    document.getElementById("add-product").addEventListener("click", async () => {
+      const title = document.getElementById("title").value;
+      const image = document.getElementById("image").value;
+      const description = document.getElementById("description").value;
+      const cost = document.getElementById("cost").value;
+      const stripeLink = document.getElementById("stripeLink").value;
+      const category = document.getElementById("category").value;
+
+      try {
+        await addDoc(collection(db, "products"), {
+          title,
+          image,
+          description,
+          cost,
+          stripeLink,
+          category,
+        });
+        alert("Product added successfully!");
+      } catch (error) {
+        alert("Error adding product: " + error.message);
+      }
+    });
+
+    // Load products
+    function loadProducts() {
+      onSnapshot(collection(db, "products"), (snapshot) => {
+        productList.innerHTML = "";
+        snapshot.docs.forEach((doc) => {
+          const product = doc.data();
+          const productEl = document.createElement("div");
+          productEl.className = "product";
+          productEl.innerHTML = `
+            <img src="${product.image}" alt="${product.title}">
+            <h3>${product.title}</h3>
+            <p>${product.description}</p>
+            <p><strong>Cost:</strong> $${product.cost}</p>
+            <a href="${product.stripeLink}" target="_blank">Buy Now</a>
+          `;
+          productList.appendChild(productEl);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
