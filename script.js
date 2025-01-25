@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
 const firebaseConfig = {
       apiKey: "AIzaSyBMUi291fwb-HSxlGPQMxdEJGUTiOOvFBs",
@@ -48,46 +48,58 @@ async function login() {
   }
 }
 
-onAuthStateChanged(auth, (user) => {
-  if (user && window.location.pathname === "/chat.html") {
-    loadMessages(user);
-  }
-});
-
 async function sendMessage() {
   const messageInput = document.getElementById("messageInput").value;
   const user = auth.currentUser;
-  const userDoc = await doc(db, "users", user.uid).get();
 
-  if (userDoc.exists()) {
-    const userData = userDoc.data();
+  if (messageInput.trim()) {
     await addDoc(collection(db, "messages"), {
-      username: userData.username,
+      username: user.displayName,
       message: messageInput,
-      role: userData.role,
       timestamp: new Date(),
     });
+    document.getElementById("messageInput").value = "";
   }
 }
 
-function loadMessages(currentUser) {
+function loadMessages() {
   const messagesContainer = document.getElementById("messages");
-  const messagesRef = collection(db, "messages");
-
-  onSnapshot(messagesRef, (snapshot) => {
+  onSnapshot(collection(db, "messages"), (snapshot) => {
     messagesContainer.innerHTML = "";
     snapshot.docs.forEach((doc) => {
-      const messageData = doc.data();
+      const { username, message } = doc.data();
       const messageEl = document.createElement("div");
-      messageEl.className = "message";
-      messageEl.textContent = `${messageData.username}: ${messageData.message}`;
+      messageEl.classList.add("message");
+      messageEl.textContent = `${username}: ${message}`;
       messagesContainer.appendChild(messageEl);
     });
   });
 }
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loadMessages();
+  }
+});
+
 function logout() {
   signOut(auth).then(() => {
     window.location.href = "index.html";
   });
+}
+
+function switchToLogin() {
+  document.getElementById("form-title").textContent = "Login";
+  document.getElementById("username-group").style.display = "none";
+  document.getElementById("submit-button").textContent = "Login";
+  document.getElementById("submit-button").setAttribute("onclick", "login()");
+  document.getElementById("switch-text").innerHTML = `Don't have an account? <a href="#" onclick="switchToRegister()">Register</a>`;
+}
+
+function switchToRegister() {
+  document.getElementById("form-title").textContent = "Register";
+  document.getElementById("username-group").style.display = "block";
+  document.getElementById("submit-button").textContent = "Register";
+  document.getElementById("submit-button").setAttribute("onclick", "register()");
+  document.getElementById("switch-text").innerHTML = `Already have an account? <a href="#" onclick="switchToLogin()">Login</a>`;
 }
