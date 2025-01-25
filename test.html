@@ -335,28 +335,78 @@
     });
 
     async function handleAuthState() {
-      if (currentUser) {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        const userData = userDoc.data();
-        if (userData.role === "admin") {
-          postForm.style.display = "block";
-        } else {
-          postForm.style.display = "none";
-        }
-        logoutButton.style.display = "block";
-        loginForm.style.display = "none";
-        registerForm.style.display = "none";
-        formToggle.style.display = "none";
-        loadPosts();
-      } else {
-        postForm.style.display = "none";
-        logoutButton.style.display = "none";
-        loginForm.style.display = "block";
-        registerForm.style.display = "none";
-        formToggle.style.display = "block";
-        postsContainer.innerHTML = "";
-      }
+  if (currentUser) {
+    // Fetch user data from Firestore
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = userDoc.data();
+
+    // Display the post form if the user has an admin role
+    if (userData.role === "admin") {
+      postForm.style.display = "block";
+    } else {
+      postForm.style.display = "none";
     }
+
+    // Update UI
+    logoutButton.style.display = "block";
+    loginForm.style.display = "none";
+    registerForm.style.display = "none";
+    formToggle.style.display = "none";
+
+    // Load posts for authenticated users
+    loadPosts();
+  } else {
+    // If no user is logged in, show login form
+    postForm.style.display = "none";
+    logoutButton.style.display = "none";
+    loginForm.style.display = "block";
+    registerForm.style.display = "none";
+    formToggle.style.display = "block";
+
+    // Clear posts
+    postsContainer.innerHTML = "";
+  }
+}
+
+// Ensure login or register action triggers the updated UI state
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.querySelector("#registerEmail").value;
+  const password = document.querySelector("#registerPassword").value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email,
+      role: "user", // Default role
+    });
+
+    // Update UI after successful registration
+    currentUser = userCredential.user;
+    handleAuthState();
+    showNotification("Registration successful! Welcome.");
+  } catch (error) {
+    showNotification(`Registration failed: ${error.message}`);
+  }
+});
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.querySelector("#loginEmail").value;
+  const password = document.querySelector("#loginPassword").value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    // Update UI after successful login
+    currentUser = userCredential.user;
+    handleAuthState();
+    showNotification("Login successful! Welcome back.");
+  } catch (error) {
+    showNotification(`Login failed: ${error.message}`);
+  }
+});
+
 
     // Create post
     postForm.addEventListener("submit", async (e) => {
