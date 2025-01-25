@@ -335,38 +335,40 @@
     });
 
     async function handleAuthState() {
+  console.log("Auth state changed. Current user:", currentUser);
+
   if (currentUser) {
-    // Fetch user data from Firestore
-    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-    const userData = userDoc.data();
+    try {
+      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const userData = userDoc.data();
+      console.log("User data fetched:", userData);
 
-    // Display the post form if the user has an admin role
-    if (userData.role === "admin") {
-      postForm.style.display = "block";
-    } else {
-      postForm.style.display = "none";
+      if (userData.role === "admin") {
+        postForm.style.display = "block";
+      } else {
+        postForm.style.display = "none";
+      }
+
+      loginForm.style.display = "none";
+      registerForm.style.display = "none";
+      formToggle.style.display = "none";
+      logoutButton.style.display = "block";
+      postsContainer.style.display = "block";
+      loadPosts();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
-
-    // Update UI
-    logoutButton.style.display = "block";
-    loginForm.style.display = "none";
-    registerForm.style.display = "none";
-    formToggle.style.display = "none";
-
-    // Load posts for authenticated users
-    loadPosts();
   } else {
-    // If no user is logged in, show login form
-    postForm.style.display = "none";
-    logoutButton.style.display = "none";
+    console.log("No user logged in.");
     loginForm.style.display = "block";
     registerForm.style.display = "none";
     formToggle.style.display = "block";
-
-    // Clear posts
-    postsContainer.innerHTML = "";
+    logoutButton.style.display = "none";
+    postForm.style.display = "none";
+    postsContainer.style.display = "none";
   }
 }
+
 
 // Ensure login or register action triggers the updated UI state
 registerForm.addEventListener("submit", async (e) => {
