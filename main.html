@@ -5,58 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login / Register</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #2c2f33;
-      color: #fff;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #5865f2, #2c2f33);
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      color: white;
     }
     .container {
+      width: 400px;
       background: #23272a;
       padding: 20px;
-      border-radius: 10px;
-      width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
       text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
     }
     input {
-      width: 90%;
-      margin: 10px 0;
+      width: 100%;
       padding: 10px;
+      border-radius: 8px;
       border: none;
-      border-radius: 5px;
       background: #40444b;
       color: white;
+      font-size: 14px;
+    }
+    input:focus {
+      outline: 2px solid #5865f2;
     }
     button {
-      width: 95%;
-      padding: 10px;
+      width: 100%;
+      padding: 12px;
       background: #5865f2;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       color: white;
+      font-size: 16px;
       cursor: pointer;
     }
     button:hover {
       background: #4752c4;
     }
+    .switch {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .switch a {
+      color: #5865f2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .switch a:hover {
+      text-decoration: underline;
+    }
+    #error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Welcome!</h1>
+    <h1 id="form-title">Register</h1>
     <div id="form">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button onclick="register()">Register</button>
-      <button onclick="login()">Login</button>
+      <div class="form-group" id="username-group">
+        <input type="text" id="username" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password">
+      </div>
+      <button id="submit-button" onclick="register()">Register</button>
     </div>
-    <p id="error" style="color: red;"></p>
+    <p id="error"></p>
+    <div class="switch">
+      <span id="switch-text">Already have an account? <a href="#" onclick="switchToLogin()">Login</a></span>
+    </div>
   </div>
 
-  <script type="module" src="/script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
