@@ -3,226 +3,269 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Futuristic Post System</title>
+  <title>Post Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: #0f051d;
-      color: #e4e4e4;
-      overflow-x: hidden;
+      background: #1e0132;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    
-
-    @keyframes move-bg {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-100px);
-      }
-    }
-
-    /* Navbar */
     .navbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      width: 100%;
       padding: 20px;
-      position: sticky;
-      top: 0;
-      background: rgba(20, 20, 40, 0.9);
-      z-index: 10;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .navbar img {
-      height: 50px;
+      width: 50px;
       cursor: pointer;
-    }
-
-    .navbar img:hover {
-      transform: scale(1.1);
-      transition: 0.3s;
     }
 
     .navbar button {
-      background: linear-gradient(135deg, #7a4bff, #bc8cff);
-      border: none;
-      border-radius: 20px;
-      color: white;
       padding: 10px 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .navbar button:hover {
-      filter: brightness(1.2);
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 800px;
-      margin: 80px auto;
-      padding: 20px;
-      background: rgba(40, 10, 60, 0.9);
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #9f77ff;
-    }
-
-    /* Forms */
-    form input,
-    form textarea,
-    form button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      background: #9c27b0;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    form input,
-    form textarea {
-      background: #2e1744;
-      color: #fff;
-      outline: none;
-    }
-
-    form button {
-      background: linear-gradient(135deg, #bc8cff, #7a4bff);
+      border-radius: 5px;
       color: white;
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.2s;
     }
 
-    form button:hover {
+    .navbar button:hover {
       transform: scale(1.05);
     }
 
-    .form-toggle {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 10px;
-      cursor: pointer;
-      color: #9f77ff;
-      text-decoration: underline;
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
     }
 
-    /* Posts Section */
-    .post {
-      background: #1d1332;
+    .post-form {
+      background: rgba(255, 255, 255, 0.05);
       padding: 20px;
-      margin: 15px 0;
-      border-radius: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .post-form input, .post-form textarea, .post-form button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .post-form button {
+      background: #6a1b9a;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .post-form button:hover {
+      transform: scale(1.05);
+    }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .post {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 20px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     }
 
     .post h3 {
-      font-size: 20px;
-      color: #9f77ff;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
+      color: #ff80ab;
     }
 
-    .post p {
-      margin: 10px 0;
+    .post .content {
       font-size: 16px;
       line-height: 1.5;
     }
 
     .post .meta {
-      font-size: 12px;
-      color: #aaa;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ccc;
     }
 
-    /* File Preview */
-    .file-preview {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px 0;
-      text-align: center;
-    }
-
-    .file-preview audio {
-      width: 100%;
+    .post .file-preview {
       margin-top: 10px;
     }
 
-    /* Like Button */
-    .like-btn {
-      background: none;
-      border: none;
-      color: #9f77ff;
-      cursor: pointer;
-      font-size: 18px;
+    .post .like-section {
+      margin-top: 10px;
       display: flex;
       align-items: center;
-      gap: 5px;
-      transition: color 0.2s;
+      gap: 10px;
     }
 
-    .like-btn:hover {
-      color: #fff;
+    .post .like-section button {
+      background: #ff4081;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    /* Notifications */
     .notification {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #7a4bff;
+      background: #6200ea;
       color: white;
       padding: 15px 20px;
-      border-radius: 10px;
-      animation: fadeInOut 3s;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
     }
 
-    @keyframes fadeInOut {
-      0% {
+    @keyframes fadeIn {
+      from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
       }
-      20% {
+      to {
         opacity: 1;
         transform: translateY(0);
       }
-      80% {
+    }
+
+    @keyframes fadeOut {
+      from {
         opacity: 1;
         transform: translateY(0);
       }
-      100% {
+      to {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
       }
     }
-      </style>
-      <body>
-        <form id="postForm" style="display: block;">
-      <input type="text" id="postTitle" placeholder="Post Title" required />
-      <textarea id="postDescription" placeholder="Write your post (use **bold**, _italic_, # Header)" required></textarea>
-      <input type="file" id="postFile" accept=".jpg,.png,.mp3,.wav,.mp4" />
-      <button type="submit">Create Post</button>
-    </form>
-    <div id="postsContainer"></div>
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <img src="logo.png" alt="Logo" onclick="window.location.href='dashboard.html'">
+    <button id="logoutButton">Logout</button>
+  </div>
 
-        <script src="/teso.js"></script>
-      </body>
+  <div class="container">
+    <div class="post-form" id="postForm">
+      <h2>Create a Post</h2>
+      <input type="text" id="postTitle" placeholder="Post Title">
+      <textarea id="postDescription" placeholder="Post Description"></textarea>
+      <input type="file" id="postFile">
+      <button type="submit" id="createPostButton">Create Post</button>
+    </div>
+    <div class="posts" id="postsContainer"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
+
+    const firebaseConfig = { /* YOUR FIREBASE CONFIG */ };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const logoutButton = document.querySelector("#logoutButton");
+    const postForm = document.querySelector("#postForm");
+    const postsContainer = document.querySelector("#postsContainer");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        postForm.style.display = "block";
+        loadPosts();
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    async function loadPosts() {
+      postsContainer.innerHTML = "";
+      const postsSnapshot = await getDocs(collection(db, "posts"));
+      postsSnapshot.forEach((doc) => {
+        const post = doc.data();
+        const postDiv = document.createElement("div");
+        postDiv.classList.add("post");
+        postDiv.innerHTML = `
+          <h3>${post.title}</h3>
+          <div class="content">${parseRichText(post.description)}</div>
+          ${
+            post.fileURL
+              ? `<div class="file-preview">
+                  ${
+                    post.fileURL.endsWith(".mp3")
+                      ? `<audio controls src="${post.fileURL}"></audio>`
+                      : `<a href="${post.fileURL}" target="_blank">Download File</a>`
+                  }
+                </div>`
+              : ""
+          }
+          <div class="meta">Posted by ${post.user} on ${new Date(
+          post.timestamp
+        ).toLocaleString()}</div>
+          <div class="like-section">
+            <button onclick="likePost('${doc.id}')">Like</button>
+          </div>
+        `;
+        postsContainer.appendChild(postDiv);
+      });
+    }
+
+    async function likePost(postId) {
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, { likes: (post.likes || 0) + 1 });
+      showNotification("Liked the post!");
+      loadPosts();
+    }
+
+    function parseRichText(input) {
+      return input
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+        .replace(/_(.*?)_/g, "<i>$1</i>")
+        .replace(/# (.*?)\n/g, "<h3>$1</h3>");
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement("div");
+      notification.classList.add("notification");
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    }
+  </script>
+</body>
+</html>
