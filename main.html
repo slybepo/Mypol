@@ -244,15 +244,14 @@ document.getElementById("post-announcement").addEventListener("click", async () 
     return;
   }
 
-  try {
-    const announcement = {
-      title,
-      text,
-      image: image || null,
-      upvotes: 0,
-      downvotes: 0,
-      timestamp: new Date(),
-    };
+  await addDoc(collection(db, "announcements"), {
+  title,
+  text,
+  image: image || null,
+  upvotes: 0,
+  downvotes: 0,
+  timestamp: new Date(),
+});
 
     await addDoc(collection(db, "announcements"), announcement);
     alert("Announcement posted!");
