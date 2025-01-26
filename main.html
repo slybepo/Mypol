@@ -261,7 +261,7 @@ document.getElementById("post-announcement").addEventListener("click", async () 
     document.getElementById("announcement-image").value = "";
   } catch (error) {
     console.error("Error posting announcement:", error.message);
-    alert("Failed to post announcement. Check your permissions.");
+    alert("Failed to post announcement:", error.message);
   }
 });
 
