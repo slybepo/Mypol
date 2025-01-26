@@ -3,29 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Store Dashboard</title>
+  <title>Futuristic Dashboard</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f3f4f6;
-      color: #1f2937;
+      color: #ffffff;
+      background: linear-gradient(45deg, #1d1f21, #2c3e50, #34495e);
+      background-size: 300% 300%;
+      animation: gradient-animation 10s ease infinite;
+    }
+
+    @keyframes gradient-animation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .header {
-      background-color: #111827;
-      padding: 15px 20px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .header h1 {
-      margin: 0;
-      font-size: 24px;
-      color: white;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
     }
 
     .credits {
@@ -34,208 +41,124 @@
       gap: 10px;
     }
 
-    .credits span {
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
+    .credits img {
+      width: 30px;
     }
 
     .container {
-      padding: 20px;
+      padding: 30px;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    /* Product Section */
-    .product-form {
-      background-color: #ffffff;
+    .product-form, .announcement-form {
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
-      border-radius: 10px;
       margin-bottom: 30px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .product-form input,
-    .product-form textarea,
-    .product-form select,
-    .product-form button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .product-form button {
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-    }
-
-    .product-form button:hover {
-      background: #2563eb;
-    }
-
-    .product-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .product {
-      background-color: #ffffff;
-      padding: 15px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
-    .product img {
+    input, textarea, select, button {
       width: 100%;
-      border-radius: 10px;
-    }
-
-    .product h3 {
       margin: 10px 0;
-      font-size: 18px;
-    }
-
-    .product p {
-      font-size: 14px;
-      color: #374151;
-    }
-
-    /* Announcement Section */
-    .announcement-section {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
-    }
-
-    .announcement-section textarea,
-    .announcement-section input,
-    .announcement-section button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .announcement-section button {
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-    }
-
-    .announcement-section button:hover {
-      background: #2563eb;
-    }
-
-    .rich-editor {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .rich-editor button {
-      padding: 5px 10px;
+      padding: 12px;
       border: none;
-      border-radius: 5px;
-      background: #3b82f6;
-      color: white;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #ffffff;
+      background: #2c3e50;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3a6073, #16222a);
       cursor: pointer;
     }
 
-    .rich-editor button:hover {
-      background: #2563eb;
+    button:hover {
+      background: linear-gradient(90deg, #43c6ac, #16222a);
     }
 
-    .announcement {
-      background-color: #ffffff;
-      margin-top: 10px;
+    .product-list, .announcement-list {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .product, .announcement {
+      background: rgba(0, 0, 0, 0.8);
       padding: 15px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .announcement h3 {
-      font-size: 18px;
-      margin: 0 0 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .announcement img {
-      max-width: 100%;
+      width: 100%;
       border-radius: 8px;
-      margin-top: 10px;
+      margin-bottom: 10px;
     }
 
     .vote-buttons {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-top: 10px;
     }
 
     .vote-buttons button {
-      background: transparent;
+      background: none;
       border: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
       cursor: pointer;
     }
 
     .vote-buttons button img {
-      width: 24px;
-      height: 24px;
+      width: 20px;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>Store Dashboard</h1>
+    <h1>Futuristic Store</h1>
     <div class="credits">
-      <img src="https://i.ibb.co/FzRdYp0/logo-generator-image-removebg-preview-1.png" alt="Credits Icon" width="20">
+      <img src="https://i.ibb.co/FzRdYp0/logo-generator-image-removebg-preview-1.png" alt="Credits">
       <span id="credits">0 Credits</span>
     </div>
   </div>
 
   <div class="container">
-    <!-- Admin Product Form -->
+    <!-- Admin Section -->
     <div class="product-form" id="admin-section" style="display: none;">
-      <h2>Add a Product</h2>
+      <h2>Add Product</h2>
       <input type="text" id="title" placeholder="Product Title" />
-      <input type="text" id="image" placeholder="Product Image URL" />
-      <textarea id="description" rows="3" placeholder="Product Description"></textarea>
-      <input type="text" id="cost" placeholder="Product Cost (in USD)" />
-      <input type="text" id="stripeLink" placeholder="Stripe Payment Link" />
+      <input type="text" id="image" placeholder="Image URL" />
+      <textarea id="description" placeholder="Description"></textarea>
+      <input type="text" id="cost" placeholder="Cost (USD)" />
+      <input type="text" id="stripeLink" placeholder="Stripe Link" />
       <select id="category">
         <option value="featured">Featured</option>
         <option value="new">New</option>
         <option value="for-you">For You</option>
       </select>
-      <button id="add-product">Post Product</button>
+      <button id="add-product">Add Product</button>
+    </div>
+
+    <!-- Announcements Section -->
+    <div class="announcement-form" id="announcement-section" style="display: none;">
+      <h2>Create Announcement</h2>
+      <input type="text" id="announcement-title" placeholder="Title" />
+      <textarea id="announcement-text" placeholder="Write your announcement"></textarea>
+      <input type="text" id="announcement-image" placeholder="Image URL (Optional)" />
+      <button id="post-announcement">Post Announcement</button>
     </div>
 
     <!-- Product List -->
     <div class="product-list" id="product-list"></div>
 
-    <!-- Announcement Section -->
-    <div class="announcement-section" id="announcement-section" style="display: none;">
-      <h2>Post Announcement</h2>
-      <input type="text" id="announcement-title" placeholder="Announcement Title" />
-      <textarea id="announcement-text" placeholder="Write your announcement here..."></textarea>
-      <div class="rich-editor">
-        <button id="bold-btn"><b>B</b></button>
-        <button id="italic-btn"><i>I</i></button>
-        <button id="color-btn">Color</button>
-      </div>
-      <input type="text" id="announcement-image" placeholder="Image URL (optional)" />
-      <button id="post-announcement">Post Announcement</button>
-    </div>
-
-    <!-- Announcements List -->
-    <div id="announcements"></div>
+    <!-- Announcements -->
+    <div class="announcement-list" id="announcements"></div>
   </div>
 
   <script type="module">
